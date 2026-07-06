@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎓 Happy Graduation!</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: '#D4A574',
+                        goldlight: '#F0D78C',
+                        golddark: '#B8860B',
+                        navy: '#1B2A4A',
+                        navydark: '#0F1A30',
+                        navylight: '#243660',
+                        cream: '#F8F6F0',
+                        warmwhite: '#F5F0E8',
+                    },
+                    fontFamily: {
+                        handwriting: ['"Dancing Script"', 'cursive'],
+                        elegant: ['"Playfair Display"', 'serif'],
+                        body: ['"Inter"', 'sans-serif'],
+                    },
+                    animation: {
+                        'heartbeat': 'heartbeat 0.9s ease-in-out infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                        'pulse-gold': 'pulseGold 2.5s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        heartbeat: {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '14%': { transform: 'scale(1.3)' },
+                            '28%': { transform: 'scale(1)' },
+                            '42%': { transform: 'scale(1.3)' },
+                            '56%': { transform: 'scale(1)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        },
+                        pulseGold: {
+                            '0%, 100%': { boxShadow: '0 0 25px rgba(212,165,116,0.4), 0 0 50px rgba(212,165,116,0.2)' },
+                            '50%': { boxShadow: '0 0 50px rgba(212,165,116,0.7), 0 0 90px rgba(212,165,116,0.4), 0 0 130px rgba(200,150,90,0.25)' },
+                        },
+                    },
+                },
+            },
+        };
+    </script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js">
+    </script>
+
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js">
+    </script>
+
+    <style>
+        :root {
+            --gold: #D4A574;
+            --goldlight: #F0D78C;
+            --navy: #1B2A4A;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+            overscroll-behavior: none;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0F1A30;
+            margin: 0;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+            color: #F8F6F0;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0F1A30;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(212, 165, 116, 0.5);
+            border-radius: 10px;
+        }
+
+        /* Glass */
+        .glass {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+        .glass-gold {
+            background: rgba(212, 165, 116, 0.06);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(212, 165, 116, 0.2);
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(212, 165, 116, 0.08);
+        }
+
+        /* Glow */
+        .glow-gold {
+            box-shadow: 0 0 35px rgba(212, 165, 116, 0.35), 0 0 70px rgba(212, 165, 116, 0.15);
+        }
+        .glow-strong {
+            box-shadow: 0 0 50px rgba(212, 165, 116, 0.55), 0 0 100px rgba(212, 165, 116, 0.25);
+        }
+
+        /* Floating elements */
+        .floating-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 200;
+            animation: floatUpParticle 4s ease-out forwards;
+            opacity: 0;
+        }
+        @keyframes floatUpParticle {
+            0% {
+                opacity: 0.9;
+                transform: translateY(0) scale(0.3) rotate(0deg);
+            }
+            30% {
+                opacity: 0.8;
+                transform: translateY(-120px) scale(1) rotate(20deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-500px) scale(0.1) rotate(-30deg);
+            }
+        }
+
+        /* Sparkles */
+        .sparkle-dot {
+            position: fixed;
+            pointer-events: none;
+            z-index: 201;
+            width: 5px;
+            height: 5px;
+            background: #F0D78C;
+            border-radius: 50%;
+            animation: sparkleAnim 1.8s ease-out forwards;
+            box-shadow: 0 0 8px #F0D78C, 0 0 16px #D4A574;
+        }
+        @keyframes sparkleAnim {
+            0% {
+                opacity: 1;
+                transform: scale(0) translate(0, 0);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.8) translate(var(--sx), var(--sy));
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0) translate(var(--ex), var(--ey));
+            }
+        }
+
+        /* Page sections */
+        .page-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1.2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .page-section.hidden {
+            display: none;
+        }
+        .bg-navy-gradient {
+            background: linear-gradient(180deg, #0F1A30 0%, #1B2A4A 35%, #0F1A30 65%, #1B2A4A 100%);
+        }
+        .bg-navy-gradient-light {
+            background: linear-gradient(180deg, #1B2A4A 0%, #243660 35%, #1B2A4A 65%, #0F1A30 100%);
+        }
+
+        /* Polaroid */
+        .polaroid-card {
+            background: #F8F6F0;
+            padding: 12px 12px 38px 12px;
+            border-radius: 6px;
+            box-shadow: 3px 6px 22px rgba(0, 0, 0, 0.35);
+            transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1.2);
+            cursor: pointer;
+            flex-shrink: 0;
+            width: 180px;
+            min-width: 180px;
+        }
+        .polaroid-card:hover {
+            transform: rotate(0deg) scale(1.07) !important;
+            box-shadow: 5px 10px 30px rgba(0, 0, 0, 0.5);
+            z-index: 5;
+        }
+        .polaroid-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 3px;
+            display: block;
+        }
+        .polaroid-card .caption {
+            text-align: center;
+            font-family: 'Dancing Script', cursive;
+            color: #3a2a1a;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            line-height: 1.2;
+        }
+        @media (max-width: 640px) {
+            .polaroid-card {
+                width: 140px;
+                min-width: 140px;
+                padding: 8px 8px 28px 8px;
+            }
+            .polaroid-card img {
+                height: 120px;
+            }
+        }
+
+        /* Timeline */
+        .timeline-vertical-line {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            background: linear-gradient(180deg, #D4A574, #F0D78C, #B8860B);
+            border-radius: 2px;
+            top: 0;
+            height: 0;
+            z-index: 0;
+        }
+        .timeline-dot {
+            width: 16px;
+            height: 16px;
+            background: #D4A574;
+            border-radius: 50%;
+            box-shadow: 0 0 18px rgba(212, 165, 116, 0.6);
+            flex-shrink: 0;
+            z-index: 2;
+        }
+
+        /* Gift box */
+        .gift-box-wrapper {
+            position: relative;
+            cursor: pointer;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+        .gift-box-wrapper:hover {
+            transform: scale(1.08);
+        }
+
+        /* Magnetic button */
+        .magnetic-btn {
+            cursor: pointer;
+            transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1.2);
+        }
+        .magnetic-btn:hover {
+            transform: scale(1.05);
+        }
+        .magnetic-btn:active {
+            transform: scale(0.94);
+        }
+
+        /* Lightbox */
+        .lightbox-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 400;
+            background: rgba(0, 0, 0, 0.93);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s ease;
+        }
+        .lightbox-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .lightbox-overlay img {
+            max-width: 92vw;
+            max-height: 88vh;
+            border-radius: 14px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+            object-fit: contain;
+        }
+
+        /* Music control */
+        .music-float-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 300;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(212, 165, 116, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.35s ease;
+            box-shadow: 0 4px 22px rgba(0, 0, 0, 0.3);
+            color: #D4A574;
+        }
+        .music-float-btn.playing {
+            animation: musicGlow 2.2s ease-in-out infinite;
+        }
+        @keyframes musicGlow {
+            0%,
+            100% {
+                box-shadow: 0 4px 22px rgba(212, 165, 116, 0.3);
+            }
+            50% {
+                box-shadow: 0 4px 40px rgba(212, 165, 116, 0.6), 0 0 60px rgba(212, 165, 116, 0.3);
+            }
+        }
+        .volume-popup {
+            position: absolute;
+            bottom: 58px;
+            right: 0;
+            background: rgba(15, 26, 48, 0.95);
+            backdrop-filter: blur(14px);
+            border-radius: 16px;
+            padding: 12px;
+            border: 1px solid rgba(212, 165, 116, 0.25);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            box-shadow: 0 6px 28px rgba(0, 0, 0, 0.5);
+        }
+        .volume-popup.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .volume-popup input[type="range"] {
+            writing-mode: vertical-lr;
+            direction: rtl;
+            height: 80px;
+            width: 28px;
+            accent-color: #D4A574;
+            cursor: pointer;
+        }
+
+        /* Typing cursor */
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s step-end infinite;
+            color: #D4A574;
+        }
+        @keyframes blink {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+        }
+
+        #loadingScreen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: linear-gradient(180deg, #0F1A30, #1B2A4A, #0F1A30);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body class="font-body">
+
+    <!-- ==================== LOADING SCREEN ==================== -->
+    <div id="loadingScreen">
+        <i class="fa-solid fa-graduation-cap" style="font-size:5rem; color:#D4A574; filter:drop-shadow(0 0 40px rgba(212,165,116,0.5)); animation: float 2.5s ease-in-out infinite;"></i>
+        <p class="text-cream/70 mt-5 text-base tracking-wider" style="font-family:'Dancing Script',cursive; font-size:1.2rem;">
+            Menyiapkan ucapan spesial untukmu...
+        </p>
+        <div style="width:180px; height:3px; background:rgba(255,255,255,0.12); border-radius:10px; margin-top:18px; overflow:hidden;">
+            <div id="loadingBar" style="height:100%; background:linear-gradient(90deg,#D4A574,#F0D78C,#B8860B); border-radius:10px; width:0%; transition:width 0.2s ease-out;"></div>
+        </div>
+    </div>
+
+    <!-- ==================== LIGHTBOX ==================== -->
+    <div class="lightbox-overlay" id="lightboxOverlay">
+        <img src="" alt="Preview" id="lightboxImg">
+    </div>
+
+    <!-- ==================== MAIN CONTAINER ==================== -->
+    <main id="mainContainer">
+
+        <!-- ========== SECTION: PEMBUKA ========== -->
+        <section class="page-section bg-navy-gradient hidden" id="sectionOpening">
+            <div class="glass-gold max-w-lg w-full p-8 md:p-12 text-center relative z-10" id="openingCard">
+                <i class="fa-solid fa-graduation-cap text-6xl md:text-7xl mb-5 animate-float" style="color:#D4A574; filter:drop-shadow(0 0 35px rgba(212,165,116,0.5));"></i>
+                <h1 class="text-3xl md:text-5xl font-bold mb-3" style="font-family:'Playfair Display',serif; color:#F0D78C; letter-spacing:-0.02em;">
+                    Happy Graduation!
+                </h1>
+                <p class="text-cream/60 text-sm md:text-base mb-4" style="font-family:'Dancing Script',cursive;">
+                    "Sebuah pencapaian luar biasa yang layak dirayakan."
+                </p>
+                <div class="text-2xl md:text-3xl font-bold mb-8 py-3 px-6 rounded-2xl inline-block" style="font-family:'Playfair Display',serif; color:#D4A574; border:2px solid rgba(212,165,116,0.3); background:rgba(212,165,116,0.06);">
+                    🎓 Nadine Nurul 🎓
+                </div>
+                <br>
+                <button id="btnOpenGreeting" class="magnetic-btn px-10 py-4 rounded-full font-bold text-lg glow-gold animate-pulse-gold"
+                style="background:linear-gradient(135deg,#B8860B,#D4A574); color:#0F1A30; border:none; cursor:pointer; letter-spacing:0.03em;">
+                💌 Buka Ucapan
+            </button>
+        </div>
+        <div id="particlesOpening" class="absolute inset-0 pointer-events-none z-0"></div>
+    </section>
+
+    <!-- ========== SECTION 1: SURAT PEMBUKA ========== -->
+    <section class="page-section bg-navy-gradient-light hidden" id="sectionLetter">
+        <div class="glass-gold max-w-lg w-full p-8 md:p-10 relative z-10" id="letterCard">
+            <i class="fa-solid fa-feather-pointed text-4xl mb-4" style="color:#D4A574;"></i>
+            <div id="letterText" class="text-cream/80 text-base md:text-lg leading-relaxed space-y-3" style="font-family:'Dancing Script',cursive; min-height:250px;"></div>
+            <button id="btnAfterLetter" class="magnetic-btn mt-6 px-8 py-3 rounded-full font-semibold hidden"
+            style="background:linear-gradient(135deg,#B8860B,#D4A574); color:#0F1A30; border:none; cursor:pointer;">
+            Lanjut 📖
+        </button>
+    </div>
+    <div id="particlesLetter" class="absolute inset-0 pointer-events-none z-0"></div>
+</section>
+
+<!-- ========== SECTION 2: PERJALANAN TIMELINE ========== -->
+<section class="page-section bg-navy-gradient hidden" id="sectionTimeline">
+    <div class="z-10 relative w-full max-w-2xl px-4">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-2" style="font-family:'Playfair Display',serif; color:#F0D78C;">
+            📚 Perjalanan Menuju Kelulusan
+        </h2>
+        <p class="text-cream/50 text-center text-sm mb-10" style="font-family:'Dancing Script',cursive;">"Setiap langkah membawamu ke sini."</p>
+        <div class="relative" id="timelineContainer">
+            <div class="timeline-vertical-line" id="timelineLine"></div>
+            <div class="space-y-20 relative z-10" id="timelineItems"></div>
+        </div>
+    </div>
+    <button id="btnAfterTimeline" class="magnetic-btn mt-10 px-8 py-3 rounded-full font-semibold"
+    style="background:linear-gradient(135deg,#B8860B,#D4A574); color:#0F1A30; border:none; cursor:pointer;">
+    Lanjut 📸
+</button>
+<div id="particlesTimeline" class="absolute inset-0 pointer-events-none z-0"></div>
+</section>
+
+<!-- ========== SECTION 3: GALERI KENANGAN ========== -->
+<section class="page-section bg-navy-gradient-light hidden" id="sectionGallery">
+    <div class="z-10 relative w-full max-w-5xl">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-2" style="font-family:'Playfair Display',serif; color:#F0D78C;">
+            📸 Galeri Kenangan
+        </h2>
+        <p class="text-cream/50 text-center text-sm mb-6">Geser untuk melihat momen-momen berharga ✨</p>
+        <div class="overflow-x-auto pb-4 px-2" id="galleryScrollContainer" style="scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; cursor:grab;">
+            <div class="flex gap-5" id="galleryInner" style="min-width:max-content;"></div>
+        </div>
+    </div>
+    <button id="btnAfterGallery" class="magnetic-btn mt-8 px-8 py-3 rounded-full font-semibold"
+    style="background:linear-gradient(135deg,#B8860B,#D4A574); color:#0F1A30; border:none; cursor:pointer;">
+    Lanjut 🌟
+</button>
+<div id="particlesGallery" class="absolute inset-0 pointer-events-none z-0"></div>
+</section>
+
+<!-- ========== SECTION 4: HAL YANG AKU KAGUMI ========== -->
+<section class="page-section bg-navy-gradient hidden" id="sectionAdmire">
+    <div class="z-10 relative w-full max-w-lg px-4">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-2" style="font-family:'Playfair Display',serif; color:#F0D78C;">
+            🌟 Hal-Hal yang Aku Kagumi Darimu
+        </h2>
+        <p class="text-cream/50 text-center text-sm mb-8" style="font-family:'Dancing Script',cursive;">"Kamu luar biasa, dan ini alasannya."</p>
+        <div class="space-y-4" id="admireCards"></div>
+    </div>
+    <button id="btnAfterAdmire" class="magnetic-btn mt-10 px-8 py-3 rounded-full font-semibold"
+    style="background:linear-gradient(135deg,#B8860B,#D4A574); color:#0F1A30; border:none; cursor:pointer;">
+    Lanjut 💬
+</button>
+<div id="particlesAdmire" class="absolute inset-0 pointer-events-none z-0"></div>
+</section>
+
+<!-- ========== SECTION 5: PESAN KHUSUS ========== -->
+<section class="page-section bg-navy-gradient-light hidden" id="sectionMessage">
+    <div class="glass-gold max-w-lg w-full p-8 md:p-10 text-center relative z-10" id="messageCard">
+        <i class="fa-solid fa-star text-5xl mb-5" style="color:#F0D78C;"></i>
+        <p class="text-cream/80 text-base md:text-lg leading-relaxed space-y-4" style="font-family:'Dancing Script',cursive;">
+            "Kelulusan bukanlah akhir dari perjalanan.<br>
+            Ini hanyalah awal dari petualangan yang lebih besar.<br>
+            Aku percaya bahwa masih banyak hal hebat yang menunggumu di masa depan.<br>
+            Teruslah bermimpi.<br>
+            Teruslah berkembang.<br>
+            Dan jangan pernah meragukan kemampuanmu sendiri."
+        </p>
+    </div>
+    <button id="btnAfterMessage" class="magnetic-btn mt-8 px-8 py-3 rounded-full font-semibold"
+    style="background:linear-gradient(135deg,#B8860B,#D4A574); color:#0F1A30; border:none; cursor:pointer;">
+    Lanjut 🏆
+</button>
+<div id="particlesMessage" class="absolute inset-0 pointer-events-none z-0"></div>
+</section>
+
+<!-- ========== SECTION 6: PENCAPAIAN HARI INI ========== -->
+<section class="page-section bg-navy-gradient hidden" id="sectionAchievement">
+    <div class="glass-gold max-w-md w-full p-8 md:p-10 text-center relative z-10" id="achievementCard">
+        <h2 class="text-2xl md:text-3xl font-bold mb-6" style="font-family:'Playfair Display',serif; color:#F0D78C;">
+            🏆 Pencapaian Hari Ini
+        </h2>
+        <div class="grid grid-cols-2 gap-4" id="achievementGrid">
+            <div class="glass p-4 rounded-2xl text-center">
+                <i class="fa-solid fa-graduation-cap text-2xl mb-1" style="color:#D4A574;"></i>
+                <p class="text-cream/50 text-xs">🎓 Status</p>
+                <p class="text-cream font-bold text-lg" style="color:#F0D78C;">LULUS</p>
+            </div>
+            <div class="glass p-4 rounded-2xl text-center">
+                <i class="fa-solid fa-trophy text-2xl mb-1" style="color:#D4A574;"></i>
+                <p class="text-cream/50 text-xs">🏆 Pencapaian</p>
+                <p class="text-cream font-bold text-lg" style="color:#F0D78C;">Graduation Day</p>
+            </div>
+            <div class="glass p-4 rounded-2xl text-center">
+                <i class="fa-solid fa-calendar-days text-2xl mb-1" style="color:#D4A574;"></i>
+                <p class="text-cream/50 text-xs">📅 Tanggal</p>
+                <p class="text-cream font-bold text-lg" style="color:#F0D78C;" id="gradDate">28 Juni 2026</p>
+            </div>
+            <div class="glass p-4 rounded-2xl text-center">
+                <i class="fa-solid fa-star text-2xl mb-1" style="color:#D4A574;"></i>
+                <p class="text-cream/50 text-xs">⭐ Level</p>
+                <p class="text-cream font-bold text-lg" style="color:#F0D78C;">Amazing</p>
+            </div>
+        </div>
+        <div class="glass p-4 rounded-2xl text-center mt-4">
+            <p class="text-cream/50 text-xs">❤️ Kebanggaan</p>
+            <div class="w-full h-3 bg-white/5 rounded-full mt-2 overflow-hidden">
+                <div id="prideBar" class="h-full rounded-full" style="width:0%; background:linear-gradient(90deg,#B8860B,#D4A574,#F0D78C); transition:width 1.5s ease-out;"></div>
+            </div>
+            <p class="text-cream font-bold text-2xl mt-2" style="color:#F0D78C;" id="pridePercent">0%</p>
+        </div>
+    </div>
+    <button id="btnAfterAchievement" class="magnetic-btn mt-8 px-8 py-3 rounded-full font-semibold"
+    style="background:linear-gradient(135deg,#B8860B,#D4A574); color:#0F1A30; border:none; cursor:pointer;">
+    Lanjut 🎁
+</button>
+<div id="particlesAchievement" class="absolute inset-0 pointer-events-none z-0"></div>
+</section>
+
+<!-- ========== SECTION 7: SURPRISE MESSAGE ========== -->
+<section class="page-section bg-navy-gradient-light hidden" id="sectionSurprise">
+    <div class="z-10 relative text-center" id="surpriseContainer">
+        <p class="text-cream/60 text-sm mb-6" style="font-family:'Dancing Script',cursive; font-size:1.1rem;">
+            🎁 Ada hadiah spesial untukmu...
+        </p>
+        <div class="gift-box-wrapper mx-auto mb-6" id="giftBoxSurprise">
+            <div style="position:relative; display:inline-block;">
+                <div style="position:absolute; inset:-25px; background:radial-gradient(circle, rgba(212,165,116,0.35) 0%, transparent 70%); border-radius:50%; pointer-events:none; z-index:-1; animation:pulseGold 2.5s ease-in-out infinite;"></div>
+                <i class="fa-solid fa-gift text-7xl md:text-8xl animate-float" style="color:#D4A574; filter:drop-shadow(0 10px 40px rgba(212,165,116,0.5)); cursor:pointer;" id="giftIconSurprise"></i>
+            </div>
+        </div>
+        <button id="btnOpenGift" class="magnetic-btn px-10 py-4 rounded-full font-bold text-lg glow-gold"
+        style="background:linear-gradient(135deg,#B8860B,#D4A574); color:#0F1A30; border:none; cursor:pointer;">
+        🎁 Buka Hadiah
+    </button>
+    <div id="surpriseReveal" class="glass-gold max-w-md w-full p-8 md:p-10 text-center mt-6 hidden">
+        <i class="fa-solid fa-heart text-5xl mb-4" style="color:#D4A574;"></i>
+        <p class="text-cream/85 text-lg md:text-xl leading-relaxed" style="font-family:'Dancing Script',cursive;">
+            "Aku bangga kepadamu."<br>
+            "Sungguh."<br>
+            "Lebih bangga dari yang bisa aku ungkapkan dengan kata-kata."
+        </p>
+        <p class="text-cream/70 text-sm mt-3">❤️</p>
+    </div>
+</div>
+<button id="btnAfterSurprise" class="magnetic-btn mt-8 px-8 py-3 rounded-full font-semibold"
+style="background:linear-gradient(135deg,#B8860B,#D4A574); color:#0F1A30; border:none; cursor:pointer;">
+Lanjut 💖
+</button>
+<div id="particlesSurprise" class="absolute inset-0 pointer-events-none z-0"></div>
+</section>
+
+<!-- ========== SECTION 8: WALL OF WISHES ========== -->
+<section class="page-section bg-navy-gradient hidden" id="sectionWishes">
+    <div class="z-10 relative w-full max-w-lg px-4">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-2" style="font-family:'Playfair Display',serif; color:#F0D78C;">
+            💌 Wall of Wishes
+        </h2>
+        <p class="text-cream/50 text-center text-sm mb-8" style="font-family:'Dancing Script',cursive;">"Doa dan harapan terbaik untukmu."</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="wishesGrid"></div>
+    </div>
+    <button id="btnAfterWishes" class="magnetic-btn mt-10 px-8 py-3 rounded-full font-semibold"
+    style="background:linear-gradient(135deg,#B8860B,#D4A574); color:#0F1A30; border:none; cursor:pointer;">
+    Lanjut 🎓
+</button>
+<div id="particlesWishes" class="absolute inset-0 pointer-events-none z-0"></div>
+</section>
+
+<!-- ========== SECTION 9: PENUTUP ========== -->
+<section class="page-section bg-navy-gradient-light hidden" id="sectionClosing">
+    <div class="glass-gold max-w-md w-full p-8 md:p-12 text-center relative z-10" id="closingCard">
+        <i class="fa-solid fa-graduation-cap text-6xl mb-5" style="color:#D4A574; filter:drop-shadow(0 0 30px rgba(212,165,116,0.5));"></i>
+        <h2 class="text-3xl md:text-4xl font-bold mb-4" style="font-family:'Playfair Display',serif; color:#F0D78C;">
+            🎓 Congratulations 🎓
+        </h2>
+        <div class="text-2xl md:text-3xl font-bold mb-3" style="font-family:'Dancing Script',cursive; color:#D4A574;">
+            ❤️ Nadine Nurul ❤️
+        </div>
+        <p class="text-cream/70 text-sm md:text-base leading-relaxed mb-2" style="font-family:'Dancing Script',cursive;">
+            "Selamat atas kelulusanmu."
+        </p>
+        <p class="text-cream/65 text-sm leading-relaxed mb-2" style="font-family:'Dancing Script',cursive;">
+            "Hari ini adalah bukti bahwa kamu mampu mencapai apa yang kamu perjuangkan."
+        </p>
+        <p class="text-cream/60 text-sm leading-relaxed mb-6" style="font-family:'Dancing Script',cursive;">
+            "Teruslah melangkah dan raih semua impianmu."
+        </p>
+        <div class="border-t border-gold/20 pt-6 mt-4">
+            <p class="text-cream/50 text-xs mb-2">Dari</p>
+            <div class="text-xl md:text-2xl font-bold" style="font-family:'Dancing Script',cursive; color:#D4A574;">
+                ❤️ Vicky Satria Lindy ❤️
+            </div>
+        </div>
+    </div>
+    <button id="btnRestart" class="magnetic-btn mt-8 px-8 py-3 rounded-full font-semibold"
+    style="background:linear-gradient(135deg,#B8860B,#D4A574); color:#0F1A30; border:none; cursor:pointer;">
+    🔄 Ulangi Cerita
+</button>
+<div id="particlesClosing" class="absolute inset-0 pointer-events-none z-0"></div>
+</section>
+
+</main>
+
+<!-- ==================== MUSIC CONTROL ==================== -->
+<div class="music-float-btn playing" id="musicFloatBtn" title="Musik Inspirasi">
+    <i class="fa-solid fa-music"></i>
+    <div class="volume-popup" id="volumePopup">
+        <input type="range" id="volumeSlider" min="0" max="100" value="35" orient="vertical" title="Volume">
+        <span style="font-size:10px;color:#D4A574;">🎵</span>
+    </div>
+</div>
+<audio id="bgMusic" loop preload="auto" style="display:none;">
+    <source src="" type="audio/mpeg">
+</audio>
+
+<script>
+    (function() {
+        // ==================== DATA KONFIGURASI ====================
+        const gradDateConfig = '28 Juni 2026';
+        const timelineData = [
+            { icon: 'fa-book-open', title: 'Hari Pertama Masuk', desc: 'Awal dari segalanya dimulai di sini.' },
+            { icon: 'fa-file-lines', title: 'Tugas dan Ujian', desc: 'Berkali-kali diuji, berkali-kali membuktikan diri.' },
+            { icon: 'fa-mug-hot', title: 'Begadang Mengerjakan Tugas', desc: 'Malam-malam panjang penuh perjuangan.' },
+            { icon: 'fa-heart-crack', title: 'Masa Sulit dan Tantangan', desc: 'Saat ingin menyerah, kamu tetap bertahan.' },
+            { icon: 'fa-hand-fist', title: 'Tetap Bertahan', desc: 'Tidak menyerah. Terus melangkah maju.' },
+            { icon: 'fa-graduation-cap', title: 'Hari Kelulusan', desc: 'Akhirnya sampai di titik ini. Luar biasa!' },
+        ];
+        const admireData = [
+            { icon: 'fa-star', text: 'Kamu tidak mudah menyerah' },
+            { icon: 'fa-heart', text: 'Kamu selalu berusaha memberikan yang terbaik' },
+            { icon: 'fa-fire', text: 'Kamu mampu bangkit saat keadaan sulit' },
+            { icon: 'fa-seedling', text: 'Kamu terus belajar menjadi lebih baik' },
+            { icon: 'fa-trophy', text: 'Kamu berhasil melewati semuanya' },
+        ];
+        const wishesData = [
+            { icon: 'fa-rocket', text: 'Semoga sukses selalu' },
+            { icon: 'fa-cloud-sun', text: 'Semoga semua impianmu tercapai' },
+            { icon: 'fa-briefcase', text: 'Semoga kariermu cemerlang' },
+            { icon: 'fa-face-smile', text: 'Semoga selalu bahagia' },
+            { icon: 'fa-shield-heart', text: 'Semoga selalu diberi kesehatan' },
+            { icon: 'fa-globe', text: 'Semoga bisa menjelajahi dunia' },
+        ];
+
+        // ==================== DOM ELEMENTS ====================
+        const loadingScreen = document.getElementById('loadingScreen');
+        const loadingBar = document.getElementById('loadingBar');
+        const allSections = document.querySelectorAll('.page-section');
+        const bgMusic = document.getElementById('bgMusic');
+        const musicFloatBtn = document.getElementById('musicFloatBtn');
+        const volumePopup = document.getElementById('volumePopup');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const lightboxOverlay = document.getElementById('lightboxOverlay');
+        const lightboxImg = document.getElementById('lightboxImg');
+
+        let musicPlaying = false;
+        let musicInitialized = false;
+        let giftOpened = false;
+
+        // ==================== UTILITY FUNCTIONS ====================
+        function showSection(sectionId) {
+            allSections.forEach(s => s.classList.add('hidden'));
+            const target = document.getElementById(sectionId);
+            target.classList.remove('hidden');
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            window.scrollTo({ top: target.offsetTop, behavior: 'smooth' });
+        }
+
+        function spawnParticles(count = 6) {
+            const symbols = ['✨', '⭐', '💫', '🌟', '🎓', '💛'];
+            for (let i = 0; i < count; i++) {
+                const p = document.createElement('span');
+                p.className = 'floating-particle';
+                p.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                p.style.left = Math.random() * 88 + 6 + '%';
+                p.style.top = Math.random() * 50 + 30 + '%';
+                p.style.fontSize = (Math.random() * 20 + 14) + 'px';
+                p.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 4500);
+            }
+        }
+
+        function spawnSparkles(count = 8) {
+            for (let i = 0; i < count; i++) {
+                const s = document.createElement('span');
+                s.className = 'sparkle-dot';
+                s.style.left = Math.random() * 85 + 7 + '%';
+                s.style.top = Math.random() * 60 + 20 + '%';
+                s.style.setProperty('--sx', (Math.random() * 40 - 20) + 'px');
+                s.style.setProperty('--sy', (Math.random() * -60 - 15) + 'px');
+                s.style.setProperty('--ex', (Math.random() * 70 - 35) + 'px');
+                s.style.setProperty('--ey', (Math.random() * -100 - 30) + 'px');
+                s.style.animationDuration = (Math.random() * 1.4 + 1) + 's';
+                document.body.appendChild(s);
+                setTimeout(() => s.remove(), 2200);
+            }
+        }
+
+        function fireConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 120,
+                    spread: 80,
+                    origin: { y: 0.55 },
+                    colors: ['#D4A574', '#F0D78C', '#B8860B', '#FFFFFF', '#F8F6F0', '#FFD700'],
+                });
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 60,
+                        spread: 50,
+                        origin: { y: 0.5, x: 0.3 },
+                        colors: ['#D4A574', '#F0D78C', '#FFFFFF'],
+                    });
+                    confetti({
+                        particleCount: 60,
+                        spread: 50,
+                        origin: { y: 0.5, x: 0.7 },
+                        colors: ['#D4A574', '#F0D78C', '#FFFFFF'],
+                    });
+                }, 400);
+            }
+        }
+
+        function animateIn(el, delay = 0) {
+            gsap.fromTo(el, { scale: 0.8, opacity: 0, y: 40 }, { scale: 1, opacity: 1, y: 0, duration: 0.8, delay,
+                ease: 'back.out(1.5)' });
+        }
+
+        // ==================== LOADING ====================
+        let progress = 0;
+        const loadInterval = setInterval(() => {
+            progress += Math.random() * 10 + 5;
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(loadInterval);
+                loadingBar.style.width = '100%';
+                setTimeout(() => {
+                    gsap.to(loadingScreen, { opacity: 0, duration: 0.7, ease: 'power2.inOut',
+                        onComplete: () => {
+                            loadingScreen.style.display = 'none';
+                            showSection('sectionOpening');
+                            animateIn('#openingCard');
+                            spawnParticles(6);
+                            spawnSparkles(8);
+                        }
+                    });
+                }, 500);
+            }
+            loadingBar.style.width = progress + '%';
+        }, 160);
+
+        // ==================== MUSIC ====================
+        function initMusic() {
+            if (musicInitialized) return;
+            musicInitialized = true;
+            bgMusic.volume = volumeSlider.value / 100;
+            bgMusic.play().then(() => {
+                musicPlaying = true;
+                musicFloatBtn.classList.add('playing');
+            }).catch(() => startAmbient());
+        }
+
+        let audioCtx, ambientGain, ambientOscillators = [];
+
+        function startAmbient() {
+            try {
+                audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+                ambientGain = audioCtx.createGain();
+                ambientGain.gain.value = 0.03;
+                ambientGain.connect(audioCtx.destination);
+                [261, 329, 392].forEach(freq => {
+                    const osc = audioCtx.createOscillator();
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    const g = audioCtx.createGain();
+                    g.gain.value = 0.12 / 3;
+                    osc.connect(g);
+                    g.connect(ambientGain);
+                    osc.start();
+                    ambientOscillators.push({ osc, gain: g });
+                });
+                musicPlaying = true;
+                musicFloatBtn.classList.add('playing');
+            } catch (e) {}
+        }
+
+        function toggleMusic() {
+            if (!musicInitialized) initMusic();
+            if (musicPlaying) {
+                if (audioCtx) { ambientOscillators.forEach(o => o.osc.stop());
+                    audioCtx.close();
+                    audioCtx = null;
+                    ambientOscillators = []; } else bgMusic.pause();
+                musicPlaying = false;
+                musicFloatBtn.classList.remove('playing');
+                musicFloatBtn.querySelector('i').className = 'fa-solid fa-volume-xmark';
+            } else {
+                if (audioCtx) startAmbient();
+                else bgMusic.play().catch(() => startAmbient());
+                musicPlaying = true;
+                musicFloatBtn.classList.add('playing');
+                musicFloatBtn.querySelector('i').className = 'fa-solid fa-music';
+            }
+        }
+
+        musicFloatBtn.addEventListener('click', (e) => { e.stopPropagation();
+            volumePopup.classList.toggle('show'); });
+        musicFloatBtn.addEventListener('dblclick', (e) => { e.stopPropagation();
+            toggleMusic();
+            volumePopup.classList.remove('show'); });
+        volumeSlider.addEventListener('input', () => {
+            const vol = volumeSlider.value / 100;
+            bgMusic.volume = vol;
+            if (ambientGain) ambientGain.gain.value = vol * 0.05;
+        });
+        document.addEventListener('click', (e) => {
+            if (!volumePopup.contains(e.target) && e.target !== musicFloatBtn) volumePopup.classList
+                .remove('show');
+        });
+        document.addEventListener('click', () => { if (!musicInitialized) initMusic(); }, { once: true });
+
+        // ==================== NAVIGASI SECTION ====================
+        document.getElementById('btnOpenGreeting').addEventListener('click', () => {
+            showSection('sectionLetter');
+            animateIn('#letterCard');
+            startTypingLetter();
+            spawnParticles(4);
+            spawnSparkles(6);
+        });
+
+        // ==================== TYPING EFFECT ====================
+        const letterParagraphs = [
+            "Hari ini adalah bukti bahwa semua usaha, doa, air mata, perjuangan, dan kesabaranmu tidak pernah sia-sia.",
+            "Mungkin perjalananmu tidak selalu mudah.",
+            "Mungkin ada hari-hari saat kamu ingin menyerah.",
+            "Tapi lihatlah dirimu sekarang.",
+            "Kamu berhasil sampai di titik ini.",
+            "Dan aku sangat bangga kepadamu ❤️"
+        ];
+
+        function startTypingLetter() {
+            const container = document.getElementById('letterText');
+            container.innerHTML = '';
+            let pIndex = 0;
+            let cIndex = 0;
+            const speed = 30;
+
+            function type() {
+                if (pIndex >= letterParagraphs.length) {
+                    document.getElementById('btnAfterLetter').classList.remove('hidden');
+                    gsap.fromTo('#btnAfterLetter', { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.4 });
+                    return;
+                }
+                const para = letterParagraphs[pIndex];
+                if (cIndex < para.length) {
+                    container.innerHTML += para.charAt(cIndex);
+                    cIndex++;
+                    setTimeout(type, speed);
+                } else {
+                    container.innerHTML += '<br><br>';
+                    cIndex = 0;
+                    pIndex++;
+                    setTimeout(type, 400);
+                }
+            }
+            type();
+        }
+
+        document.getElementById('btnAfterLetter').addEventListener('click', () => {
+            showSection('sectionTimeline');
+            renderTimeline();
+            animateTimeline();
+            spawnParticles(4);
+        });
+
+        // ==================== TIMELINE ====================
+        function renderTimeline() {
+            const container = document.getElementById('timelineItems');
+            container.innerHTML = '';
+            timelineData.forEach((item, i) => {
+                const side = i % 2 === 0 ? 'left' : 'right';
+                const div = document.createElement('div');
+                div.className =
+                    `flex items-center w-full ${side==='right'?'flex-row-reverse':''} timeline-item opacity-0 translate-y-10`;
+                div.innerHTML = `
+                    <div class="w-5/12 ${side==='right'?'text-right pr-5':'text-left pl-5'}">
+                        <div class="glass-gold p-4 rounded-2xl inline-block">
+                            <i class="fa-solid ${item.icon} text-xl mb-1" style="color:#D4A574;"></i>
+                            <h3 class="text-cream font-semibold text-sm">${item.title}</h3>
+                            <p class="text-cream/50 text-xs mt-1">${item.desc}</p>
+                        </div>
+                    </div>
+                    <div class="w-2/12 flex justify-center relative z-10"><div class="timeline-dot"></div></div>
+                    <div class="w-5/12"></div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function animateTimeline() {
+            gsap.fromTo('.timeline-item', { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.15,
+                ease: 'power2.out' });
+            gsap.to('#timelineLine', { height: '100%', duration: 2, ease: 'power2.inOut', delay: 0.3 });
+        }
+
+        document.getElementById('btnAfterTimeline').addEventListener('click', () => {
+            showSection('sectionGallery');
+            renderGallery();
+            animateGallery();
+            spawnParticles(4);
+        });
+
+        // ==================== GALERI ====================
+        function renderGallery() {
+            const container = document.getElementById('galleryInner');
+            const photos = [
+                { seed: 'grad1', caption: 'Hari pertama kuliah 📖', rotate: -3 },
+                { seed: 'grad2', caption: 'Mengerjakan tugas ✍️', rotate: 2 },
+                { seed: 'grad3', caption: 'Presentasi sukses 🎤', rotate: -1.5 },
+                { seed: 'grad4', caption: 'Belajar bersama 📚', rotate: 3.5 },
+                { seed: 'grad5', caption: 'Ujian akhir ✅', rotate: -2.5 },
+                { seed: 'grad6', caption: 'Sidang selesai 🎉', rotate: 1.5 },
+                { seed: 'grad7', caption: 'Hari kelulusan 🎓', rotate: -3.5 },
+                { seed: 'grad8', caption: 'Bersama teman ❤️', rotate: 2.5 },
+                { seed: 'grad9', caption: 'Momen tak terlupakan 📸', rotate: -1 },
+                { seed: 'grad10', caption: 'Awal petualangan baru 🌟', rotate: 3 },
+            ];
+            container.innerHTML = '';
+            photos.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'polaroid-card';
+                card.style.transform = `rotate(${p.rotate}deg)`;
+                card.style.scrollSnapAlign = 'center';
+                card.innerHTML = `
+                    <img src="https://picsum.photos/seed/${p.seed}/350/300" alt="Kenangan" loading="lazy">
+                    <p class="caption">${p.caption}</p>
+                `;
+                card.addEventListener('click', () => {
+                    lightboxImg.src = `https://picsum.photos/seed/${p.seed}/700/600`;
+                    lightboxOverlay.classList.add('active');
+                });
+                container.appendChild(card);
+            });
+        }
+
+        function animateGallery() {
+            const cards = document.querySelectorAll('.polaroid-card');
+            gsap.fromTo(cards, { opacity: 0, y: 70, scale: 0.7, rotation: () => Math.random() * 20 - 10 }, {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                rotation: (i) => [-3, 2, -1.5, 3.5, -2.5, 1.5, -3.5, 2.5, -1, 3][i] || 0,
+                duration: 0.7,
+                stagger: 0.08,
+                ease: 'back.out(1.4)',
+            });
+        }
+
+        lightboxOverlay.addEventListener('click', () => lightboxOverlay.classList.remove('active'));
+
+        document.getElementById('btnAfterGallery').addEventListener('click', () => {
+            showSection('sectionAdmire');
+            renderAdmireCards();
+            animateAdmireCards();
+            spawnParticles(4);
+            spawnSparkles(6);
+        });
+
+        // ==================== ADMIRE CARDS ====================
+        function renderAdmireCards() {
+            const container = document.getElementById('admireCards');
+            container.innerHTML = '';
+            admireData.forEach(item => {
+                const card = document.createElement('div');
+                card.className =
+                    'glass-gold p-5 rounded-2xl flex items-center gap-4 admire-card opacity-0 translate-y-8';
+                card.innerHTML = `
+                    <i class="fa-solid ${item.icon} text-2xl flex-shrink-0" style="color:#D4A574; width:32px; text-align:center;"></i>
+                    <p class="text-cream/80 text-sm md:text-base">🌟 ${item.text}</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function animateAdmireCards() {
+            gsap.fromTo('.admire-card', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.12,
+                ease: 'power2.out' });
+        }
+
+        document.getElementById('btnAfterAdmire').addEventListener('click', () => {
+            showSection('sectionMessage');
+            animateIn('#messageCard');
+            spawnParticles(4);
+        });
+
+        document.getElementById('btnAfterMessage').addEventListener('click', () => {
+            showSection('sectionAchievement');
+            animateIn('#achievementCard');
+            animateAchievement();
+            spawnSparkles(6);
+        });
+
+        // ==================== ACHIEVEMENT ====================
+        function animateAchievement() {
+            document.getElementById('gradDate').textContent = gradDateConfig;
+            setTimeout(() => {
+                document.getElementById('prideBar').style.width = '100%';
+                const percentEl = document.getElementById('pridePercent');
+                let val = 0;
+                const interval = setInterval(() => {
+                    val += Math.floor(Math.random() * 8) + 2;
+                    if (val >= 100) { val = 100;
+                        clearInterval(interval); }
+                    percentEl.textContent = val + '%';
+                }, 40);
+            }, 500);
+        }
+
+        document.getElementById('btnAfterAchievement').addEventListener('click', () => {
+            showSection('sectionSurprise');
+            animateIn('#surpriseContainer');
+            giftOpened = false;
+            document.getElementById('surpriseReveal').classList.add('hidden');
+            document.getElementById('giftIconSurprise').style.opacity = '1';
+            document.getElementById('btnOpenGift').style.display = 'inline-block';
+            spawnParticles(4);
+        });
+
+        // ==================== SURPRISE GIFT ====================
+        document.getElementById('btnOpenGift').addEventListener('click', () => {
+            if (giftOpened) return;
+            giftOpened = true;
+            const tl = gsap.timeline();
+            tl.to('#giftBoxSurprise', { scale: 1.4, duration: 0.4, ease: 'back.out(1.7)' })
+                .to('#giftIconSurprise', { rotation: -20, duration: 0.2 })
+                .to('#giftIconSurprise', { rotation: 20, duration: 0.2 })
+                .to('#giftIconSurprise', { rotation: 0, duration: 0.15 })
+                .to('#giftBoxSurprise', { scale: 2.5, opacity: 0, duration: 0.5, ease: 'power2.in' })
+                .call(() => {
+                    document.getElementById('giftIconSurprise').style.opacity = '0';
+                    document.getElementById('btnOpenGift').style.display = 'none';
+                    document.getElementById('surpriseReveal').classList.remove('hidden');
+                    animateIn('#surpriseReveal');
+                    fireConfetti();
+                    spawnParticles(10);
+                    spawnSparkles(12);
+                });
+        });
+
+        document.getElementById('btnAfterSurprise').addEventListener('click', () => {
+            showSection('sectionWishes');
+            renderWishes();
+            animateWishes();
+            spawnParticles(4);
+        });
+
+        // ==================== WALL OF WISHES ====================
+        function renderWishes() {
+            const container = document.getElementById('wishesGrid');
+            container.innerHTML = '';
+            wishesData.forEach(item => {
+                const card = document.createElement('div');
+                card.className =
+                    'glass-gold p-4 rounded-2xl text-center wish-card opacity-0 translate-y-6';
+                card.innerHTML = `
+                    <i class="fa-solid ${item.icon} text-2xl mb-2" style="color:#D4A574;"></i>
+                    <p class="text-cream/75 text-sm">${item.text}</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function animateWishes() {
+            gsap.fromTo('.wish-card', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.1,
+                ease: 'power2.out' });
+        }
+
+        document.getElementById('btnAfterWishes').addEventListener('click', () => {
+            showSection('sectionClosing');
+            animateIn('#closingCard');
+            fireConfetti();
+            spawnParticles(8);
+            spawnSparkles(10);
+        });
+
+        // ==================== RESTART ====================
+        document.getElementById('btnRestart').addEventListener('click', () => {
+            giftOpened = false;
+            document.getElementById('surpriseReveal').classList.add('hidden');
+            document.getElementById('giftIconSurprise').style.opacity = '1';
+            document.getElementById('btnOpenGift').style.display = 'inline-block';
+            gsap.set('#giftBoxSurprise', { scale: 1, opacity: 1 });
+            document.getElementById('prideBar').style.width = '0%';
+            document.getElementById('pridePercent').textContent = '0%';
+            document.getElementById('btnAfterLetter').classList.add('hidden');
+            document.getElementById('letterText').innerHTML = '';
+            showSection('sectionOpening');
+            animateIn('#openingCard');
+            spawnParticles(6);
+            spawnSparkles(8);
+        });
+
+        // ==================== MAGNETIC BUTTONS ====================
+        document.querySelectorAll('.magnetic-btn').forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                gsap.to(btn, { x: x * 0.2, y: y * 0.2, duration: 0.3, ease: 'power2.out',
+                    overwrite: 'auto' });
+            });
+            btn.addEventListener('mouseleave', () => {
+                gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1,0.4)',
+                overwrite: 'auto' });
+            });
+            btn.addEventListener('touchstart', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.touches[0].clientX - rect.left - rect.width / 2;
+                const y = e.touches[0].clientY - rect.top - rect.height / 2;
+                gsap.to(btn, { x: x * 0.15, y: y * 0.15, duration: 0.25, ease: 'power2.out',
+                    overwrite: 'auto' });
+            });
+            btn.addEventListener('touchend', () => {
+                gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1,0.3)',
+                overwrite: 'auto' });
+            });
+        });
+
+        // ==================== GLOBAL PARTICLES ====================
+        setInterval(() => {
+            if (!document.hidden) spawnParticles(2);
+        }, 4500);
+
+        // ==================== INIT ====================
+        gsap.registerPlugin(ScrollTrigger);
+        console.log('🎓 Website Happy Graduation Premium siap!');
+        console.log('❤️ Untuk Nadine Nurul - Selamat atas kelulusanmu!');
+    })();
+</script>
+</body>
+</html>
