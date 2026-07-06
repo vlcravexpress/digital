@@ -176,8 +176,6 @@
     #mobileMenu {
       transition: opacity 0.3s ease;
     }
-
-    /* loading spin */
     @keyframes spin {
       to {
         transform: rotate(360deg);
@@ -386,46 +384,108 @@
       window.addEventListener('scroll', () => backToTop.classList.toggle('show', window.scrollY > 600));
       backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-      // PORTFOLIO DATA
-      const portfolioData = [
-        { id: 'anniversary', name: 'Happy Anniversary Premium', category: 'Anniversary',
-          desc: 'Website anniversary romantis dengan animasi premium, timeline cerita, galeri foto, dan musik latar.',
-          price: 'Rp20.000', paket: 'PREMIUM', emoji: '💑', fitur: ['10 Foto Kenangan', 'Timeline Cerita',
-            'Musik Otomatis', 'PIN Rahasia', 'Balasan WhatsApp', 'Animasi Premium', 'Mobile Responsive'
-          ] },
-        { id: 'birthday', name: 'Website Ulang Tahun', category: 'Birthday',
-          desc: 'Kejutan ulang tahun dengan kue interaktif, lilin yang bisa ditiup, confetti, dan pesan spesial.',
-          price: 'Rp20.000', paket: 'PREMIUM', emoji: '🎂', fitur: ['Kue Interaktif', '10 Foto', 'Musik Otomatis',
-            'Confetti Animation', 'PIN Rahasia', 'Balasan WhatsApp', 'Mobile Responsive'
-          ] },
-        { id: 'apology', name: 'Website Permintaan Maaf', category: 'Apology',
-          desc: 'Ungkapkan maaf dengan cara yang menyentuh melalui surat digital interaktif.', price: 'Rp15.000',
-          paket: 'BASIC', emoji: '🥺', fitur: ['Surat Interaktif', '5 Foto', '1 Lagu', 'Mobile Responsive'] },
-        { id: 'graduation', name: 'Website Wisuda Premium', category: 'Graduation',
-          desc: 'Rayakan kelulusan dengan website elegan, timeline perjuangan, dan galeri kenangan.',
-          price: 'Rp30.000', paket: 'VIP', emoji: '🎓', fitur: ['Unlimited Foto', 'Timeline Perjuangan',
-            'Custom Musik', 'Custom Warna', 'Prioritas Pengerjaan', 'PIN Rahasia', 'Mobile Responsive'
-          ] },
-        { id: 'confess', name: 'Website Confess / Ajakan Jadian', category: 'Confession',
-          desc: 'Nyatakan perasaan dengan website confess yang lucu dan romantis.', price: 'Rp15.000',
-          paket: 'BASIC', emoji: '💌', fitur: ['Surat Pengakuan', '5 Foto', '1 Lagu', 'Mobile Responsive'] },
-        { id: 'invitation', name: 'Undangan Digital Premium', category: 'Invitation',
-          desc: 'Undangan digital premium untuk acara spesial dengan desain eksklusif.', price: 'Rp10.000',
-          paket: 'BASIC', emoji: '💒', fitur: ['1 Halaman', '5 Foto', '1 Lagu', 'Mobile Responsive'] },
-        { id: 'memory', name: 'Website Kenangan Relationship', category: 'Memory',
-          desc: 'Kumpulkan kenangan indah dalam satu website, lengkap dengan timeline interaktif.',
-          price: 'Rp20.000', paket: 'PREMIUM', emoji: '📸', fitur: ['10 Foto', 'Timeline Interaktif',
-            'Musik Otomatis', 'PIN Rahasia', 'Animasi Premium', 'Mobile Responsive'
-          ] },
-        { id: 'surprise', name: 'Website Surprise Birthday', category: 'Birthday',
-          desc: 'Surprise ulang tahun yang tak terlupakan dengan efek kejutan dan hadiah virtual.',
-          price: 'Rp25.000', paket: 'VIP', emoji: '🎁', fitur: ['Unlimited Foto', 'Efek Kejutan', 'Custom Musik',
-            'Custom Warna', 'Prioritas Pengerjaan', 'Mobile Responsive'
-          ] },
-        { id: 'couple', name: 'Website Couple Gallery', category: 'Gallery',
-          desc: 'Galeri foto pasangan yang romantis dengan efek polaroid dan animasi premium.', price: 'Rp15.000',
-          paket: 'BASIC', emoji: '💕', fitur: ['Galeri Foto', '5 Foto', '1 Lagu', 'Mobile Responsive'] },
-      ];
+      // PORTFOLIO DATA (dengan demoLink)
+      const portfolioData = [{
+        id: 'anniversary',
+        name: 'Happy Anniversary Premium',
+        category: 'Anniversary',
+        desc: 'Website anniversary romantis dengan animasi premium, timeline cerita, galeri foto, dan musik latar.',
+        price: 'Rp20.000',
+        paket: 'PREMIUM',
+        emoji: '💑',
+        demoLink: 'https:/vlcravexpress.github.io/digital/anniversary.html', // ganti dengan link demo asli
+        fitur: ['10 Foto Kenangan', 'Timeline Cerita', 'Musik Otomatis', 'PIN Rahasia', 'Balasan WhatsApp',
+          'Animasi Premium', 'Mobile Responsive'
+        ]
+      }, {
+        id: 'birthday',
+        name: 'Website Ulang Tahun',
+        category: 'Birthday',
+        desc: 'Kejutan ulang tahun dengan kue interaktif, lilin yang bisa ditiup, confetti, dan pesan spesial.',
+        price: 'Rp20.000',
+        paket: 'PREMIUM',
+        emoji: '🎂',
+        demoLink: 'https:/vlcravexpress.github.io/digital/birthday.html',
+        fitur: ['Kue Interaktif', '10 Foto', 'Musik Otomatis', 'Confetti Animation', 'PIN Rahasia',
+          'Balasan WhatsApp', 'Mobile Responsive'
+        ]
+      }, {
+        id: 'apology',
+        name: 'Website Permintaan Maaf',
+        category: 'Apology',
+        desc: 'Ungkapkan maaf dengan cara yang menyentuh melalui surat digital interaktif.',
+        price: 'Rp15.000',
+        paket: 'BASIC',
+        emoji: '🥺',
+        demoLink: 'https://example.com/demo/apology',
+        fitur: ['Surat Interaktif', '5 Foto', '1 Lagu', 'Mobile Responsive']
+      }, {
+        id: 'graduation',
+        name: 'Website Wisuda Premium',
+        category: 'Graduation',
+        desc: 'Rayakan kelulusan dengan website elegan, timeline perjuangan, dan galeri kenangan.',
+        price: 'Rp30.000',
+        paket: 'VIP',
+        emoji: '🎓',
+        demoLink: 'https:/vlcravexpress.github.io/digital/graduation.html',
+        fitur: ['Unlimited Foto', 'Timeline Perjuangan', 'Custom Musik', 'Custom Warna',
+          'Prioritas Pengerjaan', 'PIN Rahasia', 'Mobile Responsive'
+        ]
+      }, {
+        id: 'confess',
+        name: 'Website Confess / Ajakan Jadian',
+        category: 'Confession',
+        desc: 'Nyatakan perasaan dengan website confess yang lucu dan romantis.',
+        price: 'Rp15.000',
+        paket: 'BASIC',
+        emoji: '💌',
+        demoLink: 'https:/vlcravexpress.github.io/digital/confess.html',
+        fitur: ['Surat Pengakuan', '5 Foto', '1 Lagu', 'Mobile Responsive']
+      }, {
+        id: 'invitation',
+        name: 'Undangan Digital Premium',
+        category: 'Invitation',
+        desc: 'Undangan digital premium untuk acara spesial dengan desain eksklusif.',
+        price: 'Rp10.000',
+        paket: 'BASIC',
+        emoji: '💒',
+        demoLink: 'https://example.com/demo/invitation',
+        fitur: ['1 Halaman', '5 Foto', '1 Lagu', 'Mobile Responsive']
+      }, {
+        id: 'memory',
+        name: 'Website Kenangan Relationship',
+        category: 'Memory',
+        desc: 'Kumpulkan kenangan indah dalam satu website, lengkap dengan timeline interaktif.',
+        price: 'Rp20.000',
+        paket: 'PREMIUM',
+        emoji: '📸',
+        demoLink: 'https://example.com/demo/memory',
+        fitur: ['10 Foto', 'Timeline Interaktif', 'Musik Otomatis', 'PIN Rahasia', 'Animasi Premium',
+          'Mobile Responsive'
+        ]
+      }, {
+        id: 'surprise',
+        name: 'Website Surprise Birthday',
+        category: 'Birthday',
+        desc: 'Surprise ulang tahun yang tak terlupakan dengan efek kejutan dan hadiah virtual.',
+        price: 'Rp25.000',
+        paket: 'VIP',
+        emoji: '🎁',
+        demoLink: 'https:/vlcravexpress.github.io/digital/birthday.html',
+        fitur: ['Unlimited Foto', 'Efek Kejutan', 'Custom Musik', 'Custom Warna',
+          'Prioritas Pengerjaan', 'Mobile Responsive'
+        ]
+      }, {
+        id: 'couple',
+        name: 'Website Couple Gallery',
+        category: 'Gallery',
+        desc: 'Galeri foto pasangan yang romantis dengan efek polaroid dan animasi premium.',
+        price: 'Rp15.000',
+        paket: 'BASIC',
+        emoji: '💕',
+        demoLink: 'https://example.com/demo/couple',
+        fitur: ['Galeri Foto', '5 Foto', '1 Lagu', 'Mobile Responsive']
+      }, ];
 
       // RENDER PORTFOLIO
       const grid = document.getElementById('portfolioGrid');
@@ -485,7 +545,7 @@
               </div>
               <div class="mt-6"><h4 class="font-semibold text-white mb-3">Fitur Paket:</h4><ul class="space-y-2">${item.fitur.map(f => `<li class="flex items-center gap-2 text-textsoft text-sm"><i class="fa-solid fa-check text-green-400"></i> ${f}</li>`).join('')}</ul></div>
               <div class="flex gap-4 mt-8">
-                <button class="btn-demo-modal flex-1 px-6 py-3 rounded-full text-sm font-semibold border border-white/20 text-white hover:bg-white/5 transition text-center">🎥 Demo</button>
+                <a href="${item.demoLink}" target="_blank" class="flex-1 px-6 py-3 rounded-full text-sm font-semibold border border-white/20 text-white hover:bg-white/5 transition text-center">🎥 Demo</a>
                 <a href="https://wa.me/6282181670112?text=Halo%20VLCrave,%20saya%20ingin%20pesan%20${encodeURIComponent(item.name)}%20(${item.paket})%20seharga%20${encodeURIComponent(item.price)}." target="_blank" class="flex-1 px-6 py-3 rounded-full text-sm font-semibold text-white text-center transition hover:scale-105" style="background:linear-gradient(135deg,#6C63FF,#00D4FF);">📱 Order via WhatsApp</a>
               </div>
             `;
@@ -499,8 +559,6 @@
       });
       document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.style.display === 'flex')
           closeModal(); });
-      document.addEventListener('click', (e) => { if (e.target.classList.contains('btn-demo-modal')) alert(
-          'Demo untuk website ini akan segera tersedia! 🎥'); });
 
       // TESTIMONI
       const testimoniData = [
