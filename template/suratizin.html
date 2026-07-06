@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surat Izin Digital Premium</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#FDF8F0',
+                        softbrown: '#C8B6A6',
+                        gold: '#C5A572',
+                        darkbrown: '#5D4E37',
+                        paper: '#FAF3E8',
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        handwriting: ['"Dancing Script"', 'cursive'],
+                        body: ['"Inter"', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                    },
+                },
+            },
+        };
+    </script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <!-- html2canvas CDN -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --cream: #FDF8F0;
+            --softbrown: #C8B6A6;
+            --gold: #C5A572;
+        }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #1a1814;
+            margin: 0;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+            color: #5D4E37;
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #2a2520; }
+        ::-webkit-scrollbar-thumb { background: rgba(197, 165, 114, 0.5); border-radius: 10px; }
+
+        /* Envelope */
+        .envelope-container {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            perspective: 800px;
+            cursor: pointer;
+        }
+        .envelope-body {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(145deg, #E8D5C4, #D4BDA1);
+            border-radius: 8px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 2px 0 rgba(255,255,255,0.2);
+            z-index: 1;
+        }
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: linear-gradient(145deg, #D4BDA1, #C5A572);
+            border-radius: 8px 8px 0 0;
+            transform-origin: top center;
+            z-index: 3;
+            clip-path: polygon(0% 0%, 50% 80%, 100% 0%);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .envelope-letter-inside {
+            position: absolute;
+            top: 20px;
+            left: 15px;
+            right: 15px;
+            bottom: 30px;
+            background: #FFFDF7;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Dancing Script', cursive;
+            font-size: 0.9rem;
+            color: #5D4E37;
+            padding: 1rem;
+            transform-origin: center bottom;
+        }
+        .envelope-shadow {
+            position: absolute;
+            inset: -15px;
+            background: radial-gradient(ellipse, rgba(197,165,114,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+            animation: float 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @media (max-width: 640px) {
+            .envelope-container { width: 260px; height: 170px; }
+            .envelope-flap { height: 85px; }
+        }
+
+        /* Paper */
+        .paper-card {
+            background: #FFFDF7;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h100v100H0z' fill='none'/%3E%3Cpath d='M0 0v100h100' stroke='%23e8d5c4' stroke-width='0.5' fill='none'/%3E%3C/svg%3E");
+            border-radius: 6px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 5px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.8);
+            position: relative;
+            padding: 2.5rem;
+            border: 1px solid rgba(197,165,114,0.3);
+            transform-style: preserve-3d;
+        }
+        .paper-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 50%);
+            pointer-events: none;
+            border-radius: 6px;
+        }
+
+        /* Glass */
+        .glass-card {
+            background: rgba(255, 253, 247, 0.35);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(197, 165, 114, 0.3);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        /* Stamp */
+        .stamp-approved {
+            position: relative;
+            display: inline-block;
+            padding: 12px 28px;
+            border: 5px solid #C5A572;
+            border-radius: 12px;
+            color: #C5A572;
+            font-family: 'Playfair Display', serif;
+            font-weight: 900;
+            font-size: 2rem;
+            letter-spacing: 0.15em;
+            transform: rotate(-8deg);
+            box-shadow: inset 0 0 0 3px #FFFDF7, 0 0 20px rgba(197,165,114,0.4);
+            background: rgba(255,253,247,0.7);
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.05);
+        }
+        .stamp-ink-splash {
+            position: absolute;
+            inset: -15px;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            background: radial-gradient(circle, rgba(197,165,114,0.5) 0%, transparent 70%);
+            z-index: -1;
+        }
+
+        /* Signature SVG */
+        .signature-svg {
+            width: 180px;
+            height: 60px;
+            margin-top: 0.5rem;
+        }
+        .signature-path {
+            stroke-dasharray: 400;
+            stroke-dashoffset: 400;
+        }
+
+        /* Floating elements */
+        .floating-heart {
+            position: fixed;
+            pointer-events: none;
+            z-index: 200;
+            animation: floatUpHeart 3.5s ease-out forwards;
+            opacity: 0;
+        }
+        @keyframes floatUpHeart {
+            0% { opacity:1; transform:translateY(0) scale(0.4) rotate(0deg); }
+            40% { opacity:1; transform:translateY(-180px) scale(1.1) rotate(15deg); }
+            100% { opacity:0; transform:translateY(-550px) scale(0.15) rotate(-25deg); }
+        }
+        .sparkle-dot {
+            position: fixed;
+            pointer-events: none;
+            z-index: 201;
+            width: 5px; height: 5px;
+            background: #C5A572;
+            border-radius: 50%;
+            animation: sparkleAnim 1.6s ease-out forwards;
+            box-shadow: 0 0 8px #C5A572, 0 0 16px #E8D5C4;
+        }
+        @keyframes sparkleAnim {
+            0% { opacity:1; transform:scale(0) translate(0,0); }
+            50% { opacity:1; transform:scale(1.6) translate(var(--sx), var(--sy)); }
+            100% { opacity:0; transform:scale(0) translate(var(--ex), var(--ey)); }
+        }
+
+        /* Music */
+        .music-float-btn {
+            position: fixed; bottom:24px; right:24px; z-index:300;
+            width:48px; height:48px; border-radius:50%;
+            background: rgba(26,24,20,0.7); backdrop-filter:blur(10px);
+            border:1px solid rgba(197,165,114,0.4);
+            display:flex; align-items:center; justify-content:center;
+            cursor:pointer; font-size:20px; color:#C5A572;
+            transition: all 0.3s; box-shadow:0 4px 20px rgba(0,0,0,0.4);
+        }
+        .music-float-btn.playing { animation: musicGlow 2s ease-in-out infinite; }
+        @keyframes musicGlow {
+            0%,100% { box-shadow:0 4px 20px rgba(197,165,114,0.3); }
+            50% { box-shadow:0 4px 35px rgba(197,165,114,0.6), 0 0 50px rgba(197,165,114,0.3); }
+        }
+        .volume-popup {
+            position: absolute; bottom:58px; right:0;
+            background:rgba(26,24,20,0.9); backdrop-filter:blur(10px);
+            border-radius:16px; padding:12px; border:1px solid rgba(197,165,114,0.25);
+            display:flex; flex-direction:column; align-items:center; gap:8px;
+            opacity:0; pointer-events:none; transition:opacity 0.3s;
+            box-shadow:0 6px 25px rgba(0,0,0,0.5);
+        }
+        .volume-popup.show { opacity:1; pointer-events:all; }
+        .volume-popup input[type="range"] {
+            writing-mode:vertical-lr; direction:rtl; height:80px; width:28px;
+            accent-color:#C5A572;
+        }
+
+        /* Sections */
+        .page-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            background: #1a1814;
+            position: relative;
+            overflow: hidden;
+        }
+        .page-section.hidden { display: none; }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #C5A572, #8B734B);
+            border: none; cursor: pointer; color: #fff; font-weight: 600;
+            border-radius: 9999px; padding: 0.75rem 2rem;
+            box-shadow: 0 8px 30px rgba(197,165,114,0.4);
+            transition: all 0.3s ease; letter-spacing: 0.03em;
+        }
+        .btn-gold:hover { transform: scale(1.05); box-shadow: 0 12px 35px rgba(197,165,114,0.55); }
+        .btn-gold:active { transform: scale(0.95); }
+
+        .btn-outline-gold {
+            background: transparent; border: 2px solid #C5A572;
+            cursor: pointer; color: #C5A572; font-weight: 600;
+            border-radius: 9999px; padding: 0.7rem 1.8rem;
+            transition: all 0.3s ease; letter-spacing: 0.03em;
+        }
+        .btn-outline-gold:hover { background: rgba(197,165,114,0.1); transform: scale(1.03); }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div id="loadingScreen" style="position:fixed;inset:0;z-index:9999;background:#1a1814;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <i class="fa-solid fa-envelope text-5xl md:text-6xl animate-float" style="color:#C5A572; filter:drop-shadow(0 0 20px rgba(197,165,114,0.4));"></i>
+        <p class="text-softbrown/80 mt-4 text-base" style="font-family:'Dancing Script',cursive;">Menyiapkan surat untukmu...</p>
+        <div style="width:180px;height:3px;background:rgba(200,182,166,0.2);border-radius:10px;margin-top:16px;overflow:hidden;">
+            <div id="loadingBar" style="height:100%;background:linear-gradient(90deg,#C5A572,#E8D5C4,#C5A572);border-radius:10px;width:0%;"></div>
+        </div>
+    </div>
+
+    <!-- ==================== 4 SECTIONS ==================== -->
+    <main id="mainContainer">
+
+        <!-- Section 1: Amplop -->
+        <section class="page-section" id="sectionEnvelope">
+            <div class="text-center relative z-10">
+                <p class="text-softbrown/70 text-sm mb-6 tracking-widest" style="font-family:'Dancing Script',cursive; font-size:1.1rem;">
+                    📨 Ada sepucuk surat untukmu.
+                </p>
+                <div class="envelope-container mx-auto mb-8" id="envelopeContainer">
+                    <div class="envelope-shadow"></div>
+                    <div class="envelope-body"></div>
+                    <div class="envelope-flap" id="envelopeFlap"></div>
+                    <div class="envelope-letter-inside" id="envelopeLetterInside">
+                        <span>Surat untukmu</span>
+                    </div>
+                </div>
+                <button id="btnOpenEnvelope" class="btn-gold px-10 py-4 text-lg">
+                    📨 Buka Surat
+                </button>
+            </div>
+            <div id="particlesEnvelope" class="absolute inset-0 pointer-events-none z-0"></div>
+        </section>
+
+        <!-- Section 2: Surat Izin -->
+        <section class="page-section hidden" id="sectionLetter" style="padding-top:3rem; padding-bottom:4rem; justify-content:flex-start; min-height:100vh;">
+            <div class="w-full max-w-2xl mx-auto px-4 relative z-10">
+                <div class="paper-card mb-10" id="paperCard">
+                    <div class="text-center mb-6 opacity-0" id="headerSurat">
+                        <p class="text-xs text-darkbrown/60 tracking-widest">Nomor: 001/SI/VSL/2026</p>
+                        <p class="text-xs text-darkbrown/60" id="tanggalSurat"></p>
+                        <hr class="my-3 border-softbrown/30">
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-serif font-bold text-center mb-8 opacity-0" id="judulSurat">SURAT PERMOHONAN IZIN</h2>
+                    <div class="space-y-4 text-sm md:text-base leading-relaxed text-darkbrown/90 font-serif opacity-0" id="isiSurat">
+                        <p>Kepada Yth.<br>Orang Tua / Wali<br><span class="font-semibold text-gold" id="namaTujuan"></span></p>
+                        <p>Dengan hormat,</p>
+                        <p>Perkenalkan saya:</p>
+                        <p class="font-semibold">Nama: <span class="text-gold">Vicky Satria Lindy</span></p>
+                        <p>Melalui surat ini saya ingin memohon izin untuk mengajak:</p>
+                        <p class="font-semibold">Nama: <span class="text-gold">Nadine Nurul</span></p>
+                        <p>Dalam kegiatan yang positif, sopan, dan penuh rasa hormat.</p>
+                        <p>Saya berkomitmen untuk:</p>
+                        <ul class="list-none pl-4 space-y-1">
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-gold mt-1"></i> Menjaga sopan santun</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-gold mt-1"></i> Menjaga keamanan</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-gold mt-1"></i> Menjaga kenyamanan</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-gold mt-1"></i> Bertanggung jawab</li>
+                        </ul>
+                    </div>
+                    <div class="mt-8 p-4 rounded-lg border border-softbrown/20 bg-cream/30 opacity-0" id="detailKegiatan">
+                        <h3 class="font-serif font-semibold text-darkbrown mb-3">Detail Kegiatan</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                            <div class="flex items-center gap-2"><i class="fa-solid fa-calendar-days text-gold w-5"></i> <span class="font-medium">Tanggal:</span> <span id="detailTanggal" class="ml-1"></span></div>
+                            <div class="flex items-center gap-2"><i class="fa-solid fa-clock text-gold w-5"></i> <span class="font-medium">Waktu:</span> <span id="detailWaktu" class="ml-1"></span></div>
+                            <div class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-gold w-5"></i> <span class="font-medium">Lokasi:</span> <span id="detailLokasi" class="ml-1"></span></div>
+                            <div class="flex items-center gap-2"><i class="fa-solid fa-car text-gold w-5"></i> <span class="font-medium">Transportasi:</span> <span id="detailTransportasi" class="ml-1"></span></div>
+                            <div class="flex items-center gap-2 col-span-full"><i class="fa-solid fa-utensils text-gold w-5"></i> <span class="font-medium">Kegiatan:</span> <span id="detailKegiatanIsi" class="ml-1"></span></div>
+                        </div>
+                    </div>
+                    <div class="mt-8 opacity-0" id="penutupSurat">
+                        <p class="text-sm md:text-base leading-relaxed text-darkbrown/90 font-serif">Demikian surat permohonan izin ini saya sampaikan. Atas perhatian dan kepercayaan yang diberikan, saya mengucapkan terima kasih.</p>
+                        <div class="mt-8 text-right">
+                            <p class="text-sm text-darkbrown/70">Hormat Saya,</p>
+                            <svg class="signature-svg" viewBox="0 0 200 60"><path class="signature-path" d="M20,40 Q40,20 60,30 T100,35 T140,25 T170,35" fill="none" stroke="#5D4E37" stroke-width="2" stroke-linecap="round" id="signaturePath"/></svg>
+                            <p class="text-lg font-handwriting text-darkbrown font-semibold">❤️ Vicky Satria Lindy</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-6 opacity-0" id="btnLanjutKeKeputusan">
+                    <button id="btnToDecision" class="btn-gold px-8 py-3 text-base">Lanjut ke Keputusan ✨</button>
+                </div>
+            </div>
+            <div id="particlesLetter" class="absolute inset-0 pointer-events-none z-0"></div>
+        </section>
+
+        <!-- Section 3: Keputusan -->
+        <section class="page-section hidden" id="sectionDecision">
+            <div class="glass-card max-w-lg w-full p-6 md:p-8 text-center relative z-10 mx-4" id="decisionCard">
+                <h3 class="text-xl md:text-2xl font-serif font-bold mb-2 text-darkbrown">Bagaimana Keputusan Anda?</h3>
+                <p class="text-darkbrown/60 text-sm mb-6">"Silakan pilih salah satu keputusan di bawah ini."</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center" id="decisionButtons">
+                    <button id="btnDisetujui" class="btn-gold px-8 py-3 text-lg flex items-center gap-2"><i class="fa-solid fa-check"></i> Disetujui</button>
+                    <button id="btnBelumDisetujui" class="btn-outline-gold px-8 py-3 text-lg flex items-center gap-2"><i class="fa-solid fa-xmark"></i> Belum Disetujui</button>
+                </div>
+                <!-- Pesan Belum Disetujui -->
+                <div id="pesanBelumDisetujui" class="mt-6 hidden text-center">
+                    <div class="text-6xl mb-4">🥹</div>
+                    <p class="text-darkbrown/80 text-base md:text-lg leading-relaxed" style="font-family:'Dancing Script',cursive;">"Terima kasih sudah meluangkan waktu membaca surat ini."</p>
+                    <p class="text-darkbrown/70 text-sm mt-2">"Saya menghormati keputusan yang diberikan."</p>
+                    <p class="text-darkbrown/60 text-sm">"Semoga lain waktu saya dapat memperoleh kesempatan tersebut."</p>
+                    <button id="btnTutupSurat" class="btn-outline-gold mt-4 px-6 py-2 text-sm">📨 Tutup Surat</button>
+                </div>
+                <!-- Tombol menuju sertifikat (muncul setelah disetujui) -->
+                <div id="lanjutKeSertifikat" class="mt-6 hidden">
+                    <button id="btnLihatSertifikat" class="btn-gold px-8 py-3 text-lg">Lihat Sertifikat 🎉</button>
+                </div>
+            </div>
+            <div id="particlesDecision" class="absolute inset-0 pointer-events-none z-0"></div>
+        </section>
+
+        <!-- Section 4: Sertifikat -->
+        <section class="page-section hidden" id="sectionCertificate">
+            <div class="w-full max-w-xl mx-auto px-4 relative z-10">
+                <div id="sertifikatCard" style="background:#FFFDF7; border-radius:10px; padding:2rem; border:3px solid #C5A572; box-shadow:0 20px 50px rgba(0,0,0,0.5), 0 0 0 8px #FFFDF7, 0 0 0 12px #C5A572, 0 0 60px rgba(197,165,114,0.35); text-align:center; position:relative;">
+                    <div style="text-align:center; margin-bottom:0.5rem; color:#C5A572; font-size:1.5rem;">✦ ✦ ✦</div>
+                    <h2 class="text-2xl md:text-3xl font-serif font-bold mb-1" style="color:#5D4E37; letter-spacing:0.04em;">SURAT PERSETUJUAN</h2>
+                    <hr style="border-color:#C5A572; margin:0.8rem 3rem;">
+                    <p class="text-darkbrown/80 text-sm md:text-base mt-4 font-serif">Dengan ini menyatakan bahwa:</p>
+                    <p class="text-xl md:text-2xl font-handwriting font-bold mt-3" style="color:#C5A572;">❤️ Vicky Satria Lindy</p>
+                    <p class="text-darkbrown/70 text-sm mt-2 font-serif">Telah memperoleh izin untuk mengajak:</p>
+                    <p class="text-xl md:text-2xl font-handwriting font-bold mt-3" style="color:#C5A572;">❤️ Nadine Nurul</p>
+                    <p class="text-darkbrown/70 text-sm mt-3 font-serif">Pada kegiatan yang telah dijelaskan sebelumnya.</p>
+                    <div class="mt-6 relative inline-block" id="stampWrapper">
+                        <div class="stamp-approved" id="stampApproved">✅ APPROVED</div>
+                        <div class="stamp-ink-splash" id="stampInkSplash"></div>
+                    </div>
+                    <p class="text-xs text-darkbrown/50 mt-4">Tanggal Persetujuan: <span id="tanggalPersetujuan"></span></p>
+                    <div class="mt-6 pt-4 border-t border-softbrown/30">
+                        <p class="text-sm text-darkbrown/60 font-serif">Disetujui Oleh</p>
+                        <svg class="signature-svg mx-auto" viewBox="0 0 200 60"><path class="signature-path-approved" d="M20,40 Q45,15 70,32 T110,30 T150,22 T180,35" fill="none" stroke="#5D4E37" stroke-width="2" stroke-linecap="round" id="signaturePathApproved" stroke-dasharray="400" stroke-dashoffset="400"/></svg>
+                        <p class="text-sm font-handwriting text-darkbrown/80 mt-1" id="namaPemberiPersetujuan"></p>
+                    </div>
+                    <div style="text-align:center; margin-top:1rem; color:#C5A572; font-size:1.5rem;">✦ ✦ ✦</div>
+                </div>
+                <div class="text-center mt-6">
+                    <button id="btnSimpanSertifikat" class="btn-gold px-8 py-3 text-base flex items-center gap-2 mx-auto"><i class="fa-solid fa-camera"></i> 📸 Simpan Sertifikat</button>
+                    <button id="btnSelesai" class="btn-outline-gold mt-3 px-6 py-2 text-sm mx-auto">🏠 Selesai</button>
+                </div>
+            </div>
+            <div id="particlesCertificate" class="absolute inset-0 pointer-events-none z-0"></div>
+        </section>
+
+    </main>
+
+    <!-- Music Control -->
+    <div class="music-float-btn playing" id="musicFloatBtn" title="Musik Piano">
+        <i class="fa-solid fa-music"></i>
+        <div class="volume-popup" id="volumePopup">
+            <input type="range" id="volumeSlider" min="0" max="100" value="30" orient="vertical">
+            <span style="font-size:10px;color:#C5A572;">🎵</span>
+        </div>
+    </div>
+    <audio id="bgMusic" loop preload="auto" style="display:none;"><source src="" type="audio/mpeg"></audio>
+
+    <script>
+        (function() {
+            // Data konfigurasi
+            const suratConfig = {
+                namaTujuan: 'Bapak/Ibu Orang Tua Nadine',
+                detailTanggal: 'Sabtu, 14 Juni 2026',
+                detailWaktu: '15:00 - 18:00 WIB',
+                detailLokasi: 'Taman Kota, Pangkalpinang',
+                detailTransportasi: 'Dijemput dan diantar',
+                detailKegiatan: 'Jalan santai, ngobrol, dan makan ringan',
+                namaPemberiPersetujuan: 'Bapak/Ibu Orang Tua Nadine',
+            };
+            const today = new Date();
+            const tanggalSuratStr = today.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
+            const tanggalPersetujuanStr = today.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
+
+            // DOM
+            const loadingScreen = document.getElementById('loadingScreen');
+            const loadingBar = document.getElementById('loadingBar');
+            const sectionEnvelope = document.getElementById('sectionEnvelope');
+            const sectionLetter = document.getElementById('sectionLetter');
+            const sectionDecision = document.getElementById('sectionDecision');
+            const sectionCertificate = document.getElementById('sectionCertificate');
+            const envelopeFlap = document.getElementById('envelopeFlap');
+            const envelopeLetterInside = document.getElementById('envelopeLetterInside');
+            const btnOpenEnvelope = document.getElementById('btnOpenEnvelope');
+            const btnToDecision = document.getElementById('btnToDecision');
+            const btnDisetujui = document.getElementById('btnDisetujui');
+            const btnBelumDisetujui = document.getElementById('btnBelumDisetujui');
+            const btnLihatSertifikat = document.getElementById('btnLihatSertifikat');
+            const btnTutupSurat = document.getElementById('btnTutupSurat');
+            const btnSelesai = document.getElementById('btnSelesai');
+            const btnSimpanSertifikat = document.getElementById('btnSimpanSertifikat');
+            const pesanBelumDisetujui = document.getElementById('pesanBelumDisetujui');
+            const lanjutKeSertifikat = document.getElementById('lanjutKeSertifikat');
+            const decisionButtons = document.getElementById('decisionButtons');
+            const bgMusic = document.getElementById('bgMusic');
+            const musicFloatBtn = document.getElementById('musicFloatBtn');
+            const volumePopup = document.getElementById('volumePopup');
+            const volumeSlider = document.getElementById('volumeSlider');
+
+            let musicPlaying = false, musicInit = false;
+            let envelopeOpened = false;
+            let decisionMade = false;
+
+            // Utility
+            function showSection(section) {
+                [sectionEnvelope, sectionLetter, sectionDecision, sectionCertificate].forEach(s => s.classList.add('hidden'));
+                section.classList.remove('hidden');
+                section.scrollIntoView({ behavior:'smooth' });
+            }
+
+            function spawnHearts(count=5) {
+                const hearts = ['❤️','💕','💗','💖','💝'];
+                for(let i=0;i<count;i++){
+                    const h = document.createElement('span');
+                    h.className='floating-heart';
+                    h.textContent = hearts[Math.floor(Math.random()*hearts.length)];
+                    h.style.left = Math.random()*90+5+'%';
+                    h.style.top = Math.random()*50+30+'%';
+                    h.style.fontSize = (Math.random()*22+16)+'px';
+                    document.body.appendChild(h);
+                    setTimeout(()=>h.remove(),3500);
+                }
+            }
+            function spawnSparkles(count=8) {
+                for(let i=0;i<count;i++){
+                    const s = document.createElement('span');
+                    s.className='sparkle-dot';
+                    s.style.left = Math.random()*85+7+'%';
+                    s.style.top = Math.random()*60+20+'%';
+                    s.style.setProperty('--sx', (Math.random()*40-20)+'px');
+                    s.style.setProperty('--sy', (Math.random()*-60-15)+'px');
+                    s.style.setProperty('--ex', (Math.random()*70-35)+'px');
+                    s.style.setProperty('--ey', (Math.random()*-100-30)+'px');
+                    document.body.appendChild(s);
+                    setTimeout(()=>s.remove(),2000);
+                }
+            }
+            function fireConfetti() {
+                if(typeof confetti === 'function') {
+                    confetti({ particleCount:100, spread:70, origin:{ y:0.5 }, colors:['#C5A572','#E8D5C4','#FFFDF7','#D4BDA1','#8B734B'] });
+                    setTimeout(()=>{ confetti({ particleCount:50, spread:50, origin:{ y:0.5, x:0.3 } }); confetti({ particleCount:50, spread:50, origin:{ y:0.5, x:0.7 } }); },400);
+                }
+            }
+
+            // Loading
+            let progress=0;
+            const loadInterval = setInterval(()=>{
+                progress += Math.random()*10+5;
+                if(progress>=100){ progress=100; clearInterval(loadInterval); loadingBar.style.width='100%';
+                    setTimeout(()=>{ gsap.to(loadingScreen,{ opacity:0, duration:0.6, onComplete:()=>{ loadingScreen.style.display='none'; showSection(sectionEnvelope); gsap.fromTo(sectionEnvelope.querySelector('.envelope-container'),{ scale:0.8, opacity:0, y:40 },{ scale:1, opacity:1, y:0, duration:0.8, ease:'back.out(1.7)' }); } }); },400);
+                }
+                loadingBar.style.width = progress+'%';
+            },150);
+
+            // Music
+            function initMusic() { if(musicInit) return; musicInit=true; bgMusic.volume=volumeSlider.value/100; bgMusic.play().then(()=>{ musicPlaying=true; musicFloatBtn.classList.add('playing'); }).catch(()=>startAmbient()); }
+            let audioCtx,ambientGain,ambientOscs=[];
+            function startAmbient() { try{ audioCtx=new(window.AudioContext||window.webkitAudioContext)(); ambientGain=audioCtx.createGain(); ambientGain.gain.value=0.02; ambientGain.connect(audioCtx.destination); [261.63,329.63,392.00].forEach(f=>{ const o=audioCtx.createOscillator(); o.type='sine'; o.frequency.value=f; const g=audioCtx.createGain(); g.gain.value=0.1/3; o.connect(g); g.connect(ambientGain); o.start(); ambientOscs.push({osc:o,gain:g}); }); musicPlaying=true; musicFloatBtn.classList.add('playing'); }catch(e){} }
+            function toggleMusic() { if(!musicInit) initMusic(); if(musicPlaying){ if(audioCtx){ ambientOscs.forEach(o=>o.osc.stop()); audioCtx.close(); audioCtx=null; ambientOscs=[]; } else bgMusic.pause(); musicPlaying=false; musicFloatBtn.classList.remove('playing'); musicFloatBtn.querySelector('i').className='fa-solid fa-volume-xmark'; } else { if(audioCtx) startAmbient(); else bgMusic.play().catch(()=>startAmbient()); musicPlaying=true; musicFloatBtn.classList.add('playing'); musicFloatBtn.querySelector('i').className='fa-solid fa-music'; } }
+            musicFloatBtn.addEventListener('click',(e)=>{ e.stopPropagation(); volumePopup.classList.toggle('show'); });
+            musicFloatBtn.addEventListener('dblclick',(e)=>{ e.stopPropagation(); toggleMusic(); volumePopup.classList.remove('show'); });
+            volumeSlider.addEventListener('input',()=>{ const v=volumeSlider.value/100; bgMusic.volume=v; if(ambientGain) ambientGain.gain.value=v*0.03; });
+            document.addEventListener('click',(e)=>{ if(!volumePopup.contains(e.target) && e.target!==musicFloatBtn) volumePopup.classList.remove('show'); });
+            document.addEventListener('click',()=>{ if(!musicInit) initMusic(); },{once:true});
+
+            // Buka Amplop -> Surat
+            btnOpenEnvelope.addEventListener('click',()=>{
+                if(envelopeOpened) return;
+                envelopeOpened=true;
+                const tl = gsap.timeline();
+                tl.to(envelopeFlap,{ rotationX:-180, duration:0.8, ease:'power2.inOut', transformOrigin:'top center' })
+                  .to(envelopeLetterInside,{ y:-60, opacity:0, duration:0.5, ease:'power2.in' },'-=0.4')
+                  .to('#envelopeContainer',{ scale:1.3, opacity:0, duration:0.6, ease:'power2.in', delay:0.2 })
+                  .call(()=>{
+                      gsap.set(envelopeFlap,{ rotationX:0 });
+                      gsap.set(envelopeLetterInside,{ y:0, opacity:1 });
+                      gsap.set('#envelopeContainer',{ scale:1, opacity:1 });
+                      // Isi data surat
+                      document.getElementById('namaTujuan').textContent = suratConfig.namaTujuan;
+                      document.getElementById('tanggalSurat').textContent = tanggalSuratStr;
+                      document.getElementById('detailTanggal').textContent = suratConfig.detailTanggal;
+                      document.getElementById('detailWaktu').textContent = suratConfig.detailWaktu;
+                      document.getElementById('detailLokasi').textContent = suratConfig.detailLokasi;
+                      document.getElementById('detailTransportasi').textContent = suratConfig.detailTransportasi;
+                      document.getElementById('detailKegiatanIsi').textContent = suratConfig.detailKegiatan;
+                      document.getElementById('namaPemberiPersetujuan').textContent = suratConfig.namaPemberiPersetujuan;
+                      document.getElementById('tanggalPersetujuan').textContent = tanggalPersetujuanStr;
+                      showSection(sectionLetter);
+                      animateLetterReveal();
+                  });
+            });
+
+            function animateLetterReveal() {
+                const paperCard = document.getElementById('paperCard');
+                const header = document.getElementById('headerSurat');
+                const judul = document.getElementById('judulSurat');
+                const isi = document.getElementById('isiSurat');
+                const detail = document.getElementById('detailKegiatan');
+                const penutup = document.getElementById('penutupSurat');
+                const btnLanjut = document.getElementById('btnLanjutKeKeputusan');
+                gsap.fromTo(paperCard,{ opacity:0, y:50 },{ opacity:1, y:0, duration:0.8, ease:'power2.out' });
+                gsap.fromTo([header,judul],{ opacity:0, y:20 },{ opacity:1, y:0, duration:0.6, stagger:0.15, scrollTrigger:{ trigger:header, start:'top 90%', toggleActions:'play none none none' } });
+                gsap.fromTo(isi,{ opacity:0, y:20 },{ opacity:1, y:0, duration:0.6, scrollTrigger:{ trigger:isi, start:'top 85%', toggleActions:'play none none none' } });
+                gsap.fromTo(detail,{ opacity:0, y:20 },{ opacity:1, y:0, duration:0.6, scrollTrigger:{ trigger:detail, start:'top 85%' } });
+                gsap.fromTo(penutup,{ opacity:0, y:20 },{ opacity:1, y:0, duration:0.6, scrollTrigger:{ trigger:penutup, start:'top 85%' } });
+                gsap.to('#signaturePath',{ strokeDashoffset:0, duration:1.5, ease:'power2.inOut', scrollTrigger:{ trigger:'#signaturePath', start:'top 90%' } });
+                gsap.fromTo(btnLanjut,{ opacity:0, y:20 },{ opacity:1, y:0, duration:0.6, scrollTrigger:{ trigger:btnLanjut, start:'top 90%' } });
+            }
+
+            btnToDecision.addEventListener('click',()=>{
+                showSection(sectionDecision);
+                gsap.fromTo('#decisionCard',{ scale:0.9, opacity:0, y:30 },{ scale:1, opacity:1, y:0, duration:0.7, ease:'back.out(1.4)' });
+                // Reset decision state
+                decisionMade = false;
+                decisionButtons.style.display = 'flex';
+                pesanBelumDisetujui.classList.add('hidden');
+                lanjutKeSertifikat.classList.add('hidden');
+                gsap.set(decisionButtons,{ opacity:1 });
+            });
+
+            // Keputusan Disetujui
+            btnDisetujui.addEventListener('click',()=>{
+                if(decisionMade) return;
+                decisionMade = true;
+                gsap.to(decisionButtons,{ opacity:0, scale:0.9, duration:0.3, onComplete:()=>{ decisionButtons.style.display='none'; } });
+                // Tampilkan tombol lanjut ke sertifikat
+                lanjutKeSertifikat.classList.remove('hidden');
+                gsap.fromTo(lanjutKeSertifikat,{ opacity:0, y:20 },{ opacity:1, y:0, duration:0.5 });
+                fireConfetti();
+                spawnHearts(8);
+                spawnSparkles(10);
+            });
+
+            // Keputusan Belum Disetujui
+            btnBelumDisetujui.addEventListener('click',()=>{
+                if(decisionMade) return;
+                decisionMade = true;
+                gsap.to(decisionButtons,{ opacity:0, scale:0.9, duration:0.3, onComplete:()=>{ decisionButtons.style.display='none'; } });
+                pesanBelumDisetujui.classList.remove('hidden');
+                gsap.fromTo(pesanBelumDisetujui,{ opacity:0, y:20 },{ opacity:1, y:0, duration:0.6, ease:'power2.out' });
+                spawnSparkles(4);
+            });
+
+            // Lanjut ke Sertifikat
+            btnLihatSertifikat.addEventListener('click',()=>{
+                showSection(sectionCertificate);
+                gsap.fromTo('#sertifikatCard',{ scale:0.8, opacity:0, y:40 },{ scale:1, opacity:1, y:0, duration:0.8, ease:'back.out(1.5)' });
+                animateStamp();
+                gsap.to('#signaturePathApproved',{ strokeDashoffset:0, duration:1.5, ease:'power2.inOut', delay:0.6 });
+            });
+
+            function animateStamp() {
+                const stamp = document.getElementById('stampApproved');
+                const ink = document.getElementById('stampInkSplash');
+                const tl = gsap.timeline();
+                tl.set(stamp,{ scale:3, opacity:0, rotation:-25, y:-200 })
+                  .to(stamp,{ scale:1, opacity:1, rotation:-8, y:0, duration:0.7, ease:'back.out(2.5)' })
+                  .to(stamp,{ scale:1.15, duration:0.15 })
+                  .to(stamp,{ scale:1, duration:0.2 })
+                  .to(ink,{ opacity:1, scale:2.5, duration:0.5 }, '-=0.3')
+                  .to(ink,{ opacity:0, scale:1, duration:0.8 }, '-=0.1');
+            }
+
+            // Tutup surat (reset)
+            btnTutupSurat.addEventListener('click',()=>{
+                resetAll();
+            });
+
+            btnSelesai.addEventListener('click',()=>{
+                resetAll();
+            });
+
+            function resetAll() {
+                envelopeOpened = false;
+                decisionMade = false;
+                gsap.set(envelopeFlap,{ rotationX:0 });
+                gsap.set(envelopeLetterInside,{ y:0, opacity:1 });
+                gsap.set('#envelopeContainer',{ scale:1, opacity:1 });
+                gsap.set('#signaturePath',{ strokeDashoffset:400 });
+                gsap.set('#signaturePathApproved',{ strokeDashoffset:400 });
+                gsap.set('#stampApproved',{ scale:1, opacity:1, rotation:-8, y:0 });
+                gsap.set('#stampInkSplash',{ opacity:0, scale:1 });
+                decisionButtons.style.display = 'flex';
+                gsap.set(decisionButtons,{ opacity:1 });
+                pesanBelumDisetujui.classList.add('hidden');
+                lanjutKeSertifikat.classList.add('hidden');
+                showSection(sectionEnvelope);
+                gsap.fromTo(sectionEnvelope.querySelector('.envelope-container'),{ scale:0.8, opacity:0, y:40 },{ scale:1, opacity:1, y:0, duration:0.8, ease:'back.out(1.7)' });
+                window.scrollTo({ top:0, behavior:'smooth' });
+            }
+
+            // Simpan sertifikat
+            btnSimpanSertifikat.addEventListener('click', async ()=>{
+                const el = document.getElementById('sertifikatCard');
+                try {
+                    const canvas = await html2canvas(el, { backgroundColor:'#FFFDF7', scale:2 });
+                    const link = document.createElement('a');
+                    link.download = 'surat-persetujuan.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    btnSimpanSertifikat.innerHTML = '<i class="fa-solid fa-check"></i> Tersimpan!';
+                    btnSimpanSertifikat.style.background = 'linear-gradient(135deg, #4CAF50, #2E7D32)';
+                    setTimeout(()=>{ btnSimpanSertifikat.innerHTML = '<i class="fa-solid fa-camera"></i> 📸 Simpan Sertifikat'; btnSimpanSertifikat.style.background = 'linear-gradient(135deg, #C5A572, #8B734B)'; },2000);
+                } catch(e) { alert('Gagal menyimpan, coba lagi.'); }
+            });
+
+            gsap.registerPlugin(ScrollTrigger);
+            setInterval(()=>{ if(!document.hidden) spawnHearts(1); },5000);
+        })();
+    </script>
+</body>
+</html>
