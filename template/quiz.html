@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💌 Quiz Kenangan Kita</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pinkpastel: '#FFB5C2',
+                        rosegold: '#B76E79',
+                        cream: '#FFF8F0',
+                        softpink: '#FFD1DC',
+                        darkpink: '#E8879B',
+                        goldaccent: '#D4A574',
+                    },
+                    fontFamily: {
+                        handwriting: ['"Dancing Script"', 'cursive'],
+                        elegant: ['"Playfair Display"', 'serif'],
+                        body: ['"Inter"', 'sans-serif'],
+                    },
+                    animation: {
+                        'heartbeat': 'heartbeat 0.9s ease-in-out infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+                        'spin-slow': 'spin 8s linear infinite',
+                    },
+                    keyframes: {
+                        heartbeat: {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '14%': { transform: 'scale(1.3)' },
+                            '28%': { transform: 'scale(1)' },
+                            '42%': { transform: 'scale(1.3)' },
+                            '56%': { transform: 'scale(1)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 30px rgba(255,181,194,0.4), 0 0 60px rgba(255,181,194,0.2)' },
+                            '50%': { boxShadow: '0 0 60px rgba(255,181,194,0.7), 0 0 100px rgba(255,181,194,0.4)' },
+                        },
+                    },
+                },
+            },
+        };
+    </script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Draggable.min.js"></script>
+
+    <!-- html2canvas CDN -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+    <style>
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #1a1018;
+            margin: 0;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+            color: #FFF8F0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(183,110,121,0.5); border-radius: 10px; }
+
+        .glass {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.08);
+        }
+        .glass-pink {
+            background: rgba(255,181,194,0.08);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,181,194,0.2);
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+        }
+        .glow-pink { box-shadow: 0 0 35px rgba(255,181,194,0.35), 0 0 70px rgba(255,181,194,0.15); }
+        .glow-strong { box-shadow: 0 0 50px rgba(255,181,194,0.55), 0 0 100px rgba(255,181,194,0.25); }
+
+        .floating-heart {
+            position: fixed; pointer-events: none; z-index: 200;
+            animation: floatUpHeart 3.5s ease-out forwards; opacity: 0;
+        }
+        @keyframes floatUpHeart {
+            0% { opacity:1; transform:translateY(0) scale(0.4) rotate(0deg); }
+            40% { opacity:1; transform:translateY(-180px) scale(1.1) rotate(15deg); }
+            100% { opacity:0; transform:translateY(-550px) scale(0.15) rotate(-25deg); }
+        }
+        .sparkle-dot {
+            position: fixed; pointer-events: none; z-index: 201;
+            width: 6px; height: 6px; background: #fff; border-radius: 50%;
+            animation: sparkleAnim 1.6s ease-out forwards;
+            box-shadow: 0 0 10px #ffb5c2, 0 0 20px #ffb5c2;
+        }
+        @keyframes sparkleAnim {
+            0% { opacity:1; transform:scale(0) translate(0,0); }
+            50% { opacity:1; transform:scale(1.6) translate(var(--sx), var(--sy)); }
+            100% { opacity:0; transform:scale(0) translate(var(--ex), var(--ey)); }
+        }
+
+        .page-section {
+            min-height: 100vh; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 2rem 1rem;
+            background: linear-gradient(180deg, #1a1018 0%, #281d24 35%, #1a1018 65%);
+            position: relative; overflow: hidden;
+        }
+        .page-section.hidden { display: none; }
+
+        /* Envelope */
+        .envelope-container {
+            position: relative; width: 280px; height: 190px;
+            perspective: 800px; cursor: pointer;
+        }
+        .envelope-body {
+            position: absolute; inset: 0;
+            background: linear-gradient(145deg, #f0d0d8, #e8b8c0);
+            border-radius: 8px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 2px 0 rgba(255,255,255,0.2);
+            z-index: 1;
+        }
+        .envelope-flap {
+            position: absolute; top: 0; left: 0; right: 0; height: 90px;
+            background: linear-gradient(145deg, #e8b8c0, #d4a0a8);
+            border-radius: 8px 8px 0 0; transform-origin: top center; z-index: 3;
+            clip-path: polygon(0% 0%, 50% 80%, 100% 0%);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .envelope-letter-inside {
+            position: absolute; top: 15px; left: 12px; right: 12px; bottom: 25px;
+            background: #FFFDF7; border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 2;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Dancing Script', cursive; font-size: 0.85rem;
+            color: #5D4E37; padding: 1rem; transform-origin: center bottom;
+        }
+        .envelope-shadow {
+            position: absolute; inset: -15px;
+            background: radial-gradient(ellipse, rgba(255,181,194,0.3) 0%, transparent 70%);
+            border-radius: 50%; z-index: 0; animation: float 3s ease-in-out infinite; pointer-events: none;
+        }
+        @media (max-width: 640px) {
+            .envelope-container { width: 240px; height: 160px; }
+            .envelope-flap { height: 75px; }
+        }
+
+        /* Quiz */
+        .option-btn {
+            transition: all 0.3s ease; cursor: pointer;
+        }
+        .option-btn.correct {
+            background: linear-gradient(135deg, #10b981, #059669) !important;
+            border-color: #10b981 !important; color: white !important;
+            box-shadow: 0 0 25px rgba(16,185,129,0.5);
+        }
+        .option-btn.wrong {
+            background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+            border-color: #ef4444 !important; color: white !important;
+            animation: shake 0.5s ease-in-out;
+        }
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            10% { transform: translateX(-6px); }
+            30% { transform: translateX(6px); }
+            50% { transform: translateX(-4px); }
+            70% { transform: translateX(4px); }
+            90% { transform: translateX(-2px); }
+        }
+        .progress-fill { transition: width 0.4s cubic-bezier(0.4,0,0.2,1); }
+
+        /* Polaroid */
+        .polaroid-card {
+            background: #fffef9; padding: 10px 10px 32px 10px;
+            border-radius: 5px; box-shadow: 3px 6px 22px rgba(0,0,0,0.35);
+            cursor: grab; flex-shrink: 0; width: 160px; min-width: 160px;
+            position: absolute; transform-origin: center center;
+        }
+        .polaroid-card:active { cursor: grabbing; }
+        .polaroid-card img { width: 100%; height: 130px; object-fit: cover; border-radius: 3px; pointer-events: none; }
+        .polaroid-card .caption { text-align: center; font-family: 'Dancing Script', cursive; color: #5a3e4a; font-size: 0.7rem; margin-top: 4px; }
+
+        /* Vinyl */
+        .vinyl-disc {
+            width: 120px; height: 120px; border-radius: 50%;
+            background: radial-gradient(circle, #1a1a1a 15%, #333 45%, #111 75%, #000 100%);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .vinyl-label {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: linear-gradient(135deg, #e8879b, #b76e79);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; color: white;
+        }
+
+        /* Button */
+        .btn-premium {
+            background: linear-gradient(135deg, #e8879b, #b76e79);
+            border: none; cursor: pointer; color: #fff; font-weight: 600;
+            border-radius: 9999px; padding: 0.75rem 2rem;
+            box-shadow: 0 8px 30px rgba(184,87,106,0.4);
+            transition: all 0.3s ease; letter-spacing: 0.03em;
+        }
+        .btn-premium:hover { transform: scale(1.05); box-shadow: 0 12px 35px rgba(184,87,106,0.55); }
+        .btn-premium:active { transform: scale(0.95); }
+
+        /* Music */
+        .music-float-btn {
+            position: fixed; bottom: 24px; right: 24px; z-index: 300;
+            width: 48px; height: 48px; border-radius: 50%;
+            background: rgba(255,255,255,0.08); backdrop-filter: blur(14px);
+            border: 1px solid rgba(255,255,255,0.15);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 20px; color: #fff; transition: all 0.3s;
+            box-shadow: 0 4px 22px rgba(0,0,0,0.3);
+        }
+        .music-float-btn.playing { color: #FFB5C2; animation: musicGlow 2s ease-in-out infinite; }
+        @keyframes musicGlow {
+            0%,100% { box-shadow: 0 4px 22px rgba(255,181,194,0.3); }
+            50% { box-shadow: 0 4px 40px rgba(255,181,194,0.6); }
+        }
+        .volume-popup {
+            position: absolute; bottom: 58px; right: 0;
+            background: rgba(30,20,28,0.9); backdrop-filter: blur(14px);
+            border-radius: 16px; padding: 12px; border: 1px solid rgba(255,255,255,0.15);
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .volume-popup.show { opacity: 1; pointer-events: all; }
+        .volume-popup input[type="range"] { writing-mode: vertical-lr; direction: rtl; height: 80px; width: 28px; accent-color: #e8879b; }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div id="loadingScreen" style="position:fixed;inset:0;z-index:9999;background:linear-gradient(180deg,#1a1018,#2d1a25,#1a1018);display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <i class="fa-solid fa-heart animate-heartbeat" style="font-size:4.5rem;color:#FFB5C2;filter:drop-shadow(0 0 35px rgba(255,181,194,0.6));"></i>
+        <p class="text-white/70 mt-4 text-base" style="font-family:'Dancing Script',cursive;">Menyiapkan kejutan spesial...</p>
+        <div style="width:180px;height:3px;background:rgba(255,255,255,0.12);border-radius:10px;margin-top:16px;overflow:hidden;">
+            <div id="loadingBar" style="height:100%;background:linear-gradient(90deg,#e8879b,#ffb5c2,#d4a574);border-radius:10px;width:0%;"></div>
+        </div>
+    </div>
+
+    <!-- ==================== 4 SECTIONS ==================== -->
+    <main id="mainContainer">
+
+        <!-- SECTION 1: AMPLOP PEMBUKA -->
+        <section class="page-section" id="sectionEnvelope">
+            <div class="text-center relative z-10">
+                <p class="text-white/60 text-sm mb-6 tracking-widest" style="font-family:'Dancing Script',cursive; font-size:1.1rem;">
+                    💌 Sebuah surat untukmu
+                </p>
+                <div class="envelope-container mx-auto mb-8" id="envelopeContainer">
+                    <div class="envelope-shadow"></div>
+                    <div class="envelope-body"></div>
+                    <div class="envelope-flap" id="envelopeFlap"></div>
+                    <div class="envelope-letter-inside" id="envelopeLetterInside">
+                        <span>Quiz Kenangan</span>
+                    </div>
+                </div>
+                <button id="btnOpenEnvelope" class="btn-premium px-10 py-4 text-lg">
+                    💌 Buka Surat
+                </button>
+            </div>
+        </section>
+
+        <!-- SECTION 2: QUIZ -->
+        <section class="page-section hidden" id="sectionQuiz">
+            <div class="w-full max-w-lg px-4 relative z-10">
+                <div class="w-full h-2 bg-white/10 rounded-full mb-8 overflow-hidden">
+                    <div class="progress-fill h-full rounded-full" id="progressBar" style="width:0%; background:linear-gradient(90deg,#FFB5C2,#E8879B);"></div>
+                </div>
+                <div class="glass p-6 md:p-8 text-center" id="questionCard">
+                    <p class="text-white/50 text-sm mb-2" id="questionCounter"></p>
+                    <h2 class="text-xl md:text-2xl font-bold mb-6" style="font-family:'Dancing Script',cursive;" id="questionText"></h2>
+                    <div class="space-y-3" id="optionsContainer"></div>
+                    <button id="btnNextQuestion" class="btn-premium mt-6 px-8 py-3 hidden">Lanjut ✨</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: HASIL QUIZ -->
+        <section class="page-section hidden" id="sectionResult">
+            <div class="glass-pink max-w-md w-full p-8 md:p-10 text-center relative z-10" id="resultCard">
+                <div class="text-6xl md:text-7xl mb-4" id="resultEmoji"></div>
+                <h2 class="text-2xl md:text-3xl font-bold mb-3" style="font-family:'Dancing Script',cursive; color:#FFB5C2;" id="resultTitle"></h2>
+                <p class="text-white/75 text-base md:text-lg mb-2" style="font-family:'Dancing Script',cursive;" id="resultMessage"></p>
+                <p class="text-white/50 text-sm mb-6" id="resultScore"></p>
+                <div id="resultButtons" class="flex flex-col sm:flex-row gap-3 justify-center">
+                    <button id="btnRetry" class="btn-premium px-6 py-3">🔄 Coba Lagi</button>
+                    <button id="btnPerfectReward" class="btn-premium px-6 py-3 hidden" style="background:linear-gradient(135deg,#d4a574,#b8860b);">🎁 Buka Hadiah Spesial</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: HADIAH SPESIAL (PERFECT SCORE ONLY) -->
+        <section class="page-section hidden" id="sectionReward">
+            <div class="w-full max-w-3xl mx-auto px-4 relative z-10" style="padding-top:2rem; padding-bottom:4rem;">
+
+                <!-- Pembuka Hadiah -->
+                <div class="text-center mb-10 opacity-0" id="rewardOpening">
+                    <div class="text-4xl md:text-5xl mb-4">🎁</div>
+                    <h2 class="text-2xl md:text-3xl font-bold mb-3" style="font-family:'Dancing Script',cursive; color:#FFB5C2;">Hadiah Spesial Untukmu</h2>
+                    <p class="text-white/60 text-sm" style="font-family:'Dancing Script',cursive;">"Karena kamu mengingat semuanya dengan sempurna ❤️"</p>
+                </div>
+
+                <!-- Pilihan Hadiah -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10" id="giftCards">
+                    <div class="glass-pink p-5 rounded-2xl text-center cursor-pointer gift-card opacity-0 hover:scale-105 transition-transform" data-gift="album">
+                        <i class="fa-solid fa-camera-retro text-3xl mb-2" style="color:#FFB5C2;"></i>
+                        <p class="text-white/80 text-sm font-semibold">📸 Album Kenangan</p>
+                    </div>
+                    <div class="glass-pink p-5 rounded-2xl text-center cursor-pointer gift-card opacity-0 hover:scale-105 transition-transform" data-gift="letter">
+                        <i class="fa-solid fa-envelope text-3xl mb-2" style="color:#FFB5C2;"></i>
+                        <p class="text-white/80 text-sm font-semibold">💌 Surat Rahasia</p>
+                    </div>
+                    <div class="glass-pink p-5 rounded-2xl text-center cursor-pointer gift-card opacity-0 hover:scale-105 transition-transform" data-gift="song">
+                        <i class="fa-solid fa-music text-3xl mb-2" style="color:#FFB5C2;"></i>
+                        <p class="text-white/80 text-sm font-semibold">🎵 Lagu Untukmu</p>
+                    </div>
+                    <div class="glass-pink p-5 rounded-2xl text-center cursor-pointer gift-card opacity-0 hover:scale-105 transition-transform" data-gift="message">
+                        <i class="fa-solid fa-heart text-3xl mb-2" style="color:#FFB5C2;"></i>
+                        <p class="text-white/80 text-sm font-semibold">❤️ Pesan Spesial</p>
+                    </div>
+                </div>
+
+                <!-- Konten Hadiah -->
+                <div id="giftContentContainer" class="relative min-h-[400px]">
+                    <!-- Album Kenangan -->
+                    <div id="giftAlbum" class="gift-content hidden">
+                        <h3 class="text-xl font-bold text-center mb-4" style="font-family:'Dancing Script',cursive; color:#FFB5C2;">📸 Album Kenangan</h3>
+                        <p class="text-white/50 text-center text-sm mb-4">Geser foto untuk melihat kenangan</p>
+                        <div id="polaroidStack" class="relative mx-auto" style="width:100%; height:400px; overflow:hidden; border-radius:16px; background:rgba(255,255,255,0.03);">
+                            <!-- Polaroids akan diisi JS -->
+                        </div>
+                    </div>
+                    <!-- Surat Rahasia -->
+                    <div id="giftLetter" class="gift-content hidden">
+                        <div class="glass-pink p-8 md:p-10 text-center max-w-lg mx-auto">
+                            <i class="fa-solid fa-envelope-open-heart text-5xl mb-4" style="color:#FFB5C2;"></i>
+                            <p class="text-white/80 text-lg leading-relaxed" style="font-family:'Dancing Script',cursive;" id="secretLetterText"></p>
+                        </div>
+                    </div>
+                    <!-- Lagu Untukmu -->
+                    <div id="giftSong" class="gift-content hidden">
+                        <div class="glass-pink p-8 text-center max-w-sm mx-auto">
+                            <div class="vinyl-disc mx-auto mb-4 animate-spin-slow">
+                                <div class="vinyl-label">❤️</div>
+                            </div>
+                            <h3 class="text-white font-bold text-lg" style="font-family:'Dancing Script',cursive;">🎵 Lagu Untukmu</h3>
+                            <p class="text-white/50 text-sm mt-1">"Perfect - Ed Sheeran"</p>
+                            <div class="w-full h-2 bg-white/10 rounded-full mt-4 overflow-hidden">
+                                <div class="h-full rounded-full" style="width:60%; background:linear-gradient(90deg,#e8879b,#ffb5c2);"></div>
+                            </div>
+                            <p class="text-white/40 text-xs mt-2">❤️ Diputar dengan cinta</p>
+                        </div>
+                    </div>
+                    <!-- Pesan Spesial -->
+                    <div id="giftMessage" class="gift-content hidden">
+                        <div class="glass-pink p-8 md:p-10 text-center max-w-lg mx-auto">
+                            <i class="fa-solid fa-heart text-5xl mb-4 animate-heartbeat" style="color:#FFB5C2;"></i>
+                            <p class="text-white/80 text-lg leading-relaxed" style="font-family:'Dancing Script',cursive;">
+                                "Terima kasih karena masih mengingat semuanya."<br>
+                                "Karena bagiku, setiap kenangan bersamamu sangat berharga."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gift Box Rahasia (muncul setelah semua hadiah dibuka) -->
+                <div id="ultimateGiftBox" class="text-center mt-10 hidden opacity-0">
+                    <p class="text-white/60 text-sm mb-4" style="font-family:'Dancing Script',cursive;">🎁 Ada satu hadiah terakhir...</p>
+                    <div class="text-6xl md:text-7xl cursor-pointer animate-float" id="btnUltimateGift">🎁</div>
+                </div>
+
+                <!-- Ultimate Reward -->
+                <div id="ultimateReward" class="glass-pink p-8 md:p-10 text-center mt-6 hidden opacity-0">
+                    <div class="text-4xl mb-4">🏆</div>
+                    <h2 class="text-2xl md:text-3xl font-bold mb-3" style="font-family:'Dancing Script',cursive; color:#FFB5C2;">PERFECT MEMORY AWARD</h2>
+                    <p class="text-white/70 text-sm mb-4">Diberikan kepada:</p>
+                    <p class="text-2xl md:text-3xl font-bold mb-4" style="font-family:'Dancing Script',cursive; color:#d4a574;">❤️ Nadine Nurul</p>
+                    <p class="text-white/60 text-xs md:text-sm mb-6">Karena berhasil mengingat seluruh perjalanan dan kenangan yang telah kita lalui bersama.</p>
+                    <div class="flex flex-wrap gap-3 justify-center mb-6">
+                        <span class="glass-pink px-4 py-2 rounded-full text-sm">✨ MEMORY MASTER</span>
+                        <span class="glass-pink px-4 py-2 rounded-full text-sm">✨ SOULMATE LEVEL</span>
+                        <span class="glass-pink px-4 py-2 rounded-full text-sm">✨ PERFECT SCORE</span>
+                    </div>
+                    <button id="btnSaveAward" class="btn-premium px-8 py-3" style="background:linear-gradient(135deg,#d4a574,#b8860b);">
+                        📸 Simpan Sertifikat
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Music Control -->
+    <div class="music-float-btn playing" id="musicFloatBtn" title="Musik">
+        <i class="fa-solid fa-music"></i>
+        <div class="volume-popup" id="volumePopup">
+            <input type="range" id="volumeSlider" min="0" max="100" value="35" orient="vertical">
+            <span style="font-size:10px;color:#fff;">🎵</span>
+        </div>
+    </div>
+    <audio id="bgMusic" loop preload="auto" style="display:none;"><source src="" type="audio/mpeg"></audio>
+
+    <script>
+        (function() {
+            // ==================== DATA QUIZ ====================
+            const questions = [
+                { question: "Apa warna favorit aku?", options: ["Biru", "Hitam", "Pink", "Hijau"], correctIndex: 1 },
+                { question: "Tanggal ulang tahunku?", options: ["12 Januari", "25 Mei", "14 Februari", "1 September"], correctIndex: 1 },
+                { question: "Makanan favorit aku?", options: ["Bakso", "Mie Ayam", "Sate", "Nasi Goreng"], correctIndex: 0 },
+                { question: "Aku paling suka dipanggil apa?", options: ["Sayang", "Beb", "Cinta", "Terserah"], correctIndex: 0 },
+                { question: "Apa yang paling sering aku lakukan saat kangen?", options: ["Tidur", "Main Game", "Chat Kamu", "Nonton"], correctIndex: 2 },
+                { question: "Film genre favoritku?", options: ["Horor", "Komedi Romantis", "Action", "Drama"], correctIndex: 1 },
+                { question: "Minuman favoritku?", options: ["Kopi", "Teh", "Jus Alpukat", "Es Coklat"], correctIndex: 3 },
+                { question: "Aku paling benci kalau kamu...", options: ["Telat", "Lupa janji", "Tidak peduli", "Semua benar"], correctIndex: 3 },
+                { question: "Apa yang paling aku inginkan dari kamu?", options: ["Waktu", "Perhatian", "Hadiah", "Kepercayaan"], correctIndex: 1 },
+                { question: "Aku paling suka kalau kita...", options: ["Jalan bareng", "Diam di rumah", "Ngobrol sampai malam", "Masak bareng"], correctIndex: 2 },
+            ];
+
+            const polaroidPhotos = [
+                { seed: 'memory1', caption: '❤️ Pertama Kali Ketemu', rotate: -5 },
+                { seed: 'memory2', caption: '❤️ First Date', rotate: 3 },
+                { seed: 'memory3', caption: '❤️ Foto Favorit Aku', rotate: -2 },
+                { seed: 'memory4', caption: '❤️ Momen Paling Lucu', rotate: 6 },
+                { seed: 'memory5', caption: '❤️ Kenangan Terbaik', rotate: -4 },
+                { seed: 'memory6', caption: '❤️ Senyummu', rotate: 2 },
+            ];
+
+            // ==================== DOM ====================
+            const loadingScreen = document.getElementById('loadingScreen');
+            const loadingBar = document.getElementById('loadingBar');
+            const sectionEnvelope = document.getElementById('sectionEnvelope');
+            const sectionQuiz = document.getElementById('sectionQuiz');
+            const sectionResult = document.getElementById('sectionResult');
+            const sectionReward = document.getElementById('sectionReward');
+            const envelopeFlap = document.getElementById('envelopeFlap');
+            const envelopeLetterInside = document.getElementById('envelopeLetterInside');
+            const btnOpenEnvelope = document.getElementById('btnOpenEnvelope');
+            const questionCounter = document.getElementById('questionCounter');
+            const questionText = document.getElementById('questionText');
+            const optionsContainer = document.getElementById('optionsContainer');
+            const btnNextQuestion = document.getElementById('btnNextQuestion');
+            const progressBar = document.getElementById('progressBar');
+            const resultEmoji = document.getElementById('resultEmoji');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultMessage = document.getElementById('resultMessage');
+            const resultScore = document.getElementById('resultScore');
+            const btnRetry = document.getElementById('btnRetry');
+            const btnPerfectReward = document.getElementById('btnPerfectReward');
+            const btnSaveAward = document.getElementById('btnSaveAward');
+            const bgMusic = document.getElementById('bgMusic');
+            const musicFloatBtn = document.getElementById('musicFloatBtn');
+            const volumePopup = document.getElementById('volumePopup');
+            const volumeSlider = document.getElementById('volumeSlider');
+
+            let currentQuestion = 0;
+            let score = 0;
+            let answered = false;
+            let envelopeOpened = false;
+            let openedGifts = new Set();
+
+            // ==================== UTILITY ====================
+            function showSection(section) {
+                [sectionEnvelope, sectionQuiz, sectionResult, sectionReward].forEach(s => s.classList.add('hidden'));
+                section.classList.remove('hidden');
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            function spawnHearts(count=5) {
+                const hearts = ['❤️','💕','💗','💖','💝'];
+                for(let i=0;i<count;i++){
+                    const h = document.createElement('span');
+                    h.className='floating-heart';
+                    h.textContent=hearts[Math.floor(Math.random()*hearts.length)];
+                    h.style.left=Math.random()*90+5+'%';
+                    h.style.top=Math.random()*50+30+'%';
+                    h.style.fontSize=(Math.random()*22+16)+'px';
+                    document.body.appendChild(h);
+                    setTimeout(()=>h.remove(),3500);
+                }
+            }
+            function spawnSparkles(count=8) {
+                for(let i=0;i<count;i++){
+                    const s=document.createElement('span');
+                    s.className='sparkle-dot';
+                    s.style.left=Math.random()*85+7+'%';
+                    s.style.top=Math.random()*60+20+'%';
+                    s.style.setProperty('--sx',(Math.random()*40-20)+'px');
+                    s.style.setProperty('--sy',(Math.random()*-60-15)+'px');
+                    s.style.setProperty('--ex',(Math.random()*70-35)+'px');
+                    s.style.setProperty('--ey',(Math.random()*-100-30)+'px');
+                    document.body.appendChild(s);
+                    setTimeout(()=>s.remove(),2000);
+                }
+            }
+            function fireConfetti() {
+                if(typeof confetti === 'function') {
+                    confetti({ particleCount:100, spread:70, origin:{y:0.5}, colors:['#FFB5C2','#E8879B','#B76E79','#D4A574','#fff'] });
+                    setTimeout(()=>{ confetti({ particleCount:50, spread:50, origin:{y:0.5,x:0.3} }); confetti({ particleCount:50, spread:50, origin:{y:0.5,x:0.7} }); },300);
+                }
+            }
+
+            // Loading
+            let progress=0;
+            const loadInterval = setInterval(()=>{
+                progress += Math.random()*10+5;
+                if(progress>=100){ progress=100; clearInterval(loadInterval); loadingBar.style.width='100%';
+                    setTimeout(()=>{ gsap.to(loadingScreen,{ opacity:0, duration:0.6, onComplete:()=>{ loadingScreen.style.display='none'; showSection(sectionEnvelope); gsap.fromTo('.envelope-container',{ scale:0.8, opacity:0, y:40 },{ scale:1, opacity:1, y:0, duration:0.8, ease:'back.out(1.7)' }); } }); },400);
+                }
+                loadingBar.style.width=progress+'%';
+            },150);
+
+            // Music
+            let musicPlaying=false, musicInit=false;
+            function initMusic() { if(musicInit) return; musicInit=true; bgMusic.volume=volumeSlider.value/100; bgMusic.play().then(()=>{ musicPlaying=true; musicFloatBtn.classList.add('playing'); }).catch(()=>startAmbient()); }
+            let audioCtx,ambientGain,ambientOscs=[];
+            function startAmbient() { try{ audioCtx=new(window.AudioContext||window.webkitAudioContext)(); ambientGain=audioCtx.createGain(); ambientGain.gain.value=0.03; ambientGain.connect(audioCtx.destination); [261,329,392].forEach(f=>{ const o=audioCtx.createOscillator(); o.type='sine'; o.frequency.value=f; const g=audioCtx.createGain(); g.gain.value=0.12/3; o.connect(g); g.connect(ambientGain); o.start(); ambientOscs.push({osc:o,gain:g}); }); musicPlaying=true; musicFloatBtn.classList.add('playing'); }catch(e){} }
+            function toggleMusic() { if(!musicInit) initMusic(); if(musicPlaying){ if(audioCtx){ ambientOscs.forEach(o=>o.osc.stop()); audioCtx.close(); audioCtx=null; ambientOscs=[]; } else bgMusic.pause(); musicPlaying=false; musicFloatBtn.classList.remove('playing'); musicFloatBtn.querySelector('i').className='fa-solid fa-volume-xmark'; } else { if(audioCtx) startAmbient(); else bgMusic.play().catch(()=>startAmbient()); musicPlaying=true; musicFloatBtn.classList.add('playing'); musicFloatBtn.querySelector('i').className='fa-solid fa-music'; } }
+            musicFloatBtn.addEventListener('click',(e)=>{ e.stopPropagation(); volumePopup.classList.toggle('show'); });
+            musicFloatBtn.addEventListener('dblclick',(e)=>{ e.stopPropagation(); toggleMusic(); volumePopup.classList.remove('show'); });
+            volumeSlider.addEventListener('input',()=>{ const v=volumeSlider.value/100; bgMusic.volume=v; if(ambientGain) ambientGain.gain.value=v*0.05; });
+            document.addEventListener('click',(e)=>{ if(!volumePopup.contains(e.target) && e.target!==musicFloatBtn) volumePopup.classList.remove('show'); });
+            document.addEventListener('click',()=>{ if(!musicInit) initMusic(); },{once:true});
+
+            // ==================== BUKA AMPLOP ====================
+            btnOpenEnvelope.addEventListener('click',()=>{
+                if(envelopeOpened) return;
+                envelopeOpened=true;
+                const tl=gsap.timeline();
+                tl.to(envelopeFlap,{ rotationX:-180, duration:0.8, ease:'power2.inOut', transformOrigin:'top center' })
+                  .to(envelopeLetterInside,{ y:-60, opacity:0, duration:0.5, ease:'power2.in' },'-=0.4')
+                  .to('#envelopeContainer',{ scale:1.3, opacity:0, duration:0.6, ease:'power2.in', delay:0.2 })
+                  .call(()=>{ gsap.set(envelopeFlap,{ rotationX:0 }); gsap.set(envelopeLetterInside,{ y:0, opacity:1 }); gsap.set('#envelopeContainer',{ scale:1, opacity:1 }); showSection(sectionQuiz); renderQuestion(0); });
+            });
+
+            // ==================== QUIZ ====================
+            function renderQuestion(index) {
+                if(index >= questions.length) { finishQuiz(); return; }
+                currentQuestion = index;
+                answered = false;
+                const q = questions[index];
+                questionCounter.textContent = `Pertanyaan ${index+1} dari ${questions.length}`;
+                questionText.textContent = q.question;
+                optionsContainer.innerHTML = '';
+                q.options.forEach((opt,i)=>{
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn w-full py-4 px-5 rounded-2xl text-left font-medium border border-white/15 bg-white/5 hover:border-pinkpastel/40 transition-all duration-300 flex items-center gap-3';
+                    btn.innerHTML = `<span class="text-pinkpastel text-lg w-7"><i class="fa-regular fa-circle"></i></span><span>${opt}</span>`;
+                    btn.addEventListener('click',()=> selectOption(i, btn));
+                    optionsContainer.appendChild(btn);
+                });
+                btnNextQuestion.classList.add('hidden');
+                progressBar.style.width = (index / questions.length * 100) + '%';
+                gsap.fromTo('#questionCard',{ opacity:0, x:40 },{ opacity:1, x:0, duration:0.4, ease:'power2.out' });
+            }
+
+            function selectOption(index, btn) {
+                if(answered) return;
+                answered = true;
+                const correct = questions[currentQuestion].correctIndex;
+                const allBtns = document.querySelectorAll('.option-btn');
+                allBtns.forEach(b => b.style.pointerEvents = 'none');
+                if(index === correct) {
+                    score++;
+                    btn.classList.add('correct');
+                    btn.querySelector('i').className = 'fa-solid fa-circle-check';
+                    spawnSparkles(4);
+                } else {
+                    btn.classList.add('wrong');
+                    btn.querySelector('i').className = 'fa-solid fa-circle-xmark';
+                    allBtns[correct].classList.add('correct');
+                    allBtns[correct].querySelector('i').className = 'fa-solid fa-circle-check';
+                }
+                btnNextQuestion.classList.remove('hidden');
+                gsap.fromTo(btnNextQuestion,{ opacity:0, y:10 },{ opacity:1, y:0, duration:0.3 });
+            }
+
+            btnNextQuestion.addEventListener('click',()=>{ renderQuestion(currentQuestion+1); });
+
+            function finishQuiz() {
+                const percent = Math.round(score / questions.length * 100);
+                progressBar.style.width = '100%';
+                showSection(sectionResult);
+                if(percent === 100) {
+                    resultEmoji.textContent = '🎉';
+                    resultTitle.textContent = 'SEMPURNA!';
+                    resultMessage.textContent = 'Kamu berhasil mengingat semua cerita kita.';
+                    resultScore.textContent = `Skor: ${score}/${questions.length} (100%)`;
+                    btnPerfectReward.classList.remove('hidden');
+                } else {
+                    resultEmoji.textContent = '🥹';
+                    resultTitle.textContent = 'Hampir Sempurna...';
+                    resultMessage.textContent = 'Masih ada beberapa kenangan yang perlu kita ingat bersama lagi ❤️';
+                    resultScore.textContent = `Skor: ${score}/${questions.length} (${percent}%)`;
+                    btnPerfectReward.classList.add('hidden');
+                }
+                gsap.fromTo('#resultCard',{ scale:0.7, opacity:0 },{ scale:1, opacity:1, duration:0.7, ease:'back.out(1.5)' });
+                spawnHearts(6);
+                if(percent===100) fireConfetti();
+            }
+
+            btnRetry.addEventListener('click',()=>{
+                currentQuestion=0; score=0;
+                showSection(sectionQuiz);
+                renderQuestion(0);
+                progressBar.style.width='0%';
+            });
+
+            btnPerfectReward.addEventListener('click',()=>{
+                showSection(sectionReward);
+                initRewardSection();
+                fireConfetti();
+                spawnHearts(10);
+                spawnSparkles(12);
+            });
+
+            // ==================== REWARD SECTION ====================
+            function initRewardSection() {
+                openedGifts.clear();
+                // Reset semua konten hadiah
+                document.querySelectorAll('.gift-content').forEach(c => c.classList.add('hidden'));
+                document.getElementById('ultimateGiftBox').classList.add('hidden');
+                document.getElementById('ultimateReward').classList.add('hidden');
+                // Animate reward opening
+                gsap.fromTo('#rewardOpening',{ opacity:0, y:30 },{ opacity:1, y:0, duration:0.8, ease:'power2.out' });
+                gsap.fromTo('.gift-card',{ opacity:0, y:40 },{ opacity:1, y:0, duration:0.6, stagger:0.1, ease:'back.out(1.4)' });
+                // Setup gift cards
+                document.querySelectorAll('.gift-card').forEach(card => {
+                    card.onclick = () => openGift(card.dataset.gift);
+                });
+                // Setup ultimate gift
+                document.getElementById('btnUltimateGift').onclick = openUltimateGift;
+                // Setup save award
+                btnSaveAward.onclick = saveAward;
+                // Build polaroid stack
+                buildPolaroidStack();
+            }
+
+            function openGift(type) {
+                if(openedGifts.has(type)) return;
+                openedGifts.add(type);
+                document.querySelectorAll('.gift-content').forEach(c => c.classList.add('hidden'));
+                const contentMap = {
+                    album: 'giftAlbum',
+                    letter: 'giftLetter',
+                    song: 'giftSong',
+                    message: 'giftMessage'
+                };
+                const el = document.getElementById(contentMap[type]);
+                if(el) {
+                    el.classList.remove('hidden');
+                    gsap.fromTo(el,{ opacity:0, y:30, scale:0.9 },{ opacity:1, y:0, scale:1, duration:0.6, ease:'back.out(1.4)' });
+                }
+                if(type === 'letter') {
+                    typeLetterAnimation();
+                }
+                spawnSparkles(5);
+                // Cek apakah semua hadiah sudah dibuka
+                if(openedGifts.size >= 4) {
+                    setTimeout(()=>{
+                        document.getElementById('ultimateGiftBox').classList.remove('hidden');
+                        gsap.fromTo('#ultimateGiftBox',{ opacity:0, y:30 },{ opacity:1, y:0, duration:0.7, ease:'back.out(1.4)' });
+                    }, 800);
+                }
+            }
+
+            function typeLetterAnimation() {
+                const el = document.getElementById('secretLetterText');
+                const text = "Sebenarnya hadiah terbesar bukan foto-foto ini. Tapi fakta bahwa kamu masih mengingat semua cerita kecil yang pernah kita lalui bersama ❤️";
+                el.textContent = '';
+                let i=0;
+                function type() { if(i<text.length) { el.textContent += text.charAt(i); i++; setTimeout(type,30); } }
+                type();
+            }
+
+            function buildPolaroidStack() {
+                const stack = document.getElementById('polaroidStack');
+                stack.innerHTML = '';
+                polaroidPhotos.forEach((p,i) => {
+                    const card = document.createElement('div');
+                    card.className = 'polaroid-card';
+                    card.style.left = (20 + i*25) + 'px';
+                    card.style.top = (20 + i*20) + 'px';
+                    card.style.transform = `rotate(${p.rotate}deg)`;
+                    card.style.zIndex = i;
+                    card.innerHTML = `<img src="https://picsum.photos/seed/${p.seed}/300/250" alt="Kenangan"><p class="caption">${p.caption}</p>`;
+                    stack.appendChild(card);
+                    // Draggable
+                    Draggable.create(card, {
+                        type: 'x,y',
+                        bounds: stack,
+                        inertia: true,
+                        onPress: function() { this.target.style.zIndex = 100; },
+                        onRelease: function() { this.target.style.zIndex = polaroidPhotos.length + 10; },
+                    });
+                });
+            }
+
+            function openUltimateGift() {
+                document.getElementById('ultimateReward').classList.remove('hidden');
+                gsap.fromTo('#ultimateReward',{ scale:0.3, opacity:0 },{ scale:1, opacity:1, duration:0.9, ease:'back.out(1.7)' });
+                fireConfetti();
+                spawnHearts(15);
+                spawnSparkles(20);
+            }
+
+            async function saveAward() {
+                const el = document.getElementById('ultimateReward');
+                try {
+                    const canvas = await html2canvas(el, { backgroundColor:'#1a1018', scale:2 });
+                    const link = document.createElement('a');
+                    link.download = 'perfect-memory-award.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    btnSaveAward.innerHTML = '<i class="fa-solid fa-check"></i> Tersimpan!';
+                    setTimeout(()=>{ btnSaveAward.innerHTML = '📸 Simpan Sertifikat'; },2000);
+                } catch(e) { alert('Gagal menyimpan, coba lagi.'); }
+            }
+
+            gsap.registerPlugin(ScrollTrigger);
+            setInterval(()=>{ if(!document.hidden) spawnHearts(1); },4000);
+        })();
+    </script>
+</body>
+</html>
