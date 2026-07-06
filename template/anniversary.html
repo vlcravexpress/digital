@@ -28,9 +28,7 @@
                     animation: {
                         'heartbeat': 'heartbeat 0.9s ease-in-out infinite',
                         'float': 'float 3s ease-in-out infinite',
-                        'float-slow': 'float 6s ease-in-out infinite',
                         'pulse-glow': 'pulseGlow 2.5s ease-in-out infinite',
-                        'shake': 'shake 0.5s ease-in-out',
                     },
                     keyframes: {
                         heartbeat: {
@@ -45,16 +43,8 @@
                             '50%': { transform: 'translateY(-15px)' },
                         },
                         pulseGlow: {
-                            '0%, 100%': { boxShadow: '0 0 30px rgba(255,181,194,0.3), 0 0 60px rgba(255,181,194,0.1)' },
+                            '0%, 100%': { boxShadow: '0 0 30px rgba(255,181,194,0.3)' },
                             '50%': { boxShadow: '0 0 50px rgba(255,181,194,0.6), 0 0 90px rgba(255,181,194,0.3)' },
-                        },
-                        shake: {
-                            '0%, 100%': { transform: 'translateX(0)' },
-                            '10%': { transform: 'translateX(-10px)' },
-                            '30%': { transform: 'translateX(10px)' },
-                            '50%': { transform: 'translateX(-7px)' },
-                            '70%': { transform: 'translateX(7px)' },
-                            '90%': { transform: 'translateX(-3px)' },
                         },
                     },
                 },
@@ -69,31 +59,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- GSAP CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js">
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js">
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
     <!-- html2canvas -->
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js">
-    </script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
     <!-- Canvas Confetti -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js">
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
     <style>
-        :root {
-            --pink: #FFB5C2;
-            --rose: #B76E79;
-            --gold: #D4A574;
-        }
-        * {
-            box-sizing: border-box;
-        }
-        html {
-            scroll-behavior: smooth;
-        }
+        :root { --pink: #FFB5C2; --rose: #B76E79; --gold: #D4A574; }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
             font-family: 'Inter', sans-serif;
             background: #0D0A0E;
@@ -103,226 +81,120 @@
             -webkit-font-smoothing: antialiased;
             color: #FFF8F0;
         }
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0D0A0E;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(183, 110, 121, 0.5);
-            border-radius: 10px;
-        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #0D0A0E; }
+        ::-webkit-scrollbar-thumb { background: rgba(183,110,121,0.5); border-radius: 10px; }
 
         .glass {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255,255,255,0.05);
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255,255,255,0.1);
             border-radius: 24px;
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.3);
         }
         .glass-pink {
-            background: rgba(255, 181, 194, 0.07);
+            background: rgba(255,181,194,0.07);
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
-            border: 1px solid rgba(255, 181, 194, 0.18);
+            border: 1px solid rgba(255,181,194,0.18);
             border-radius: 20px;
-            box-shadow: 0 8px 35px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 35px rgba(0,0,0,0.3);
         }
-        .glow-pink {
-            box-shadow: 0 0 35px rgba(255, 181, 194, 0.35), 0 0 70px rgba(255, 181, 194, 0.15);
-        }
-        .glow-rose {
-            box-shadow: 0 0 45px rgba(183, 110, 121, 0.45), 0 0 80px rgba(183, 110, 121, 0.2);
-        }
+        .glow-pink { box-shadow: 0 0 35px rgba(255,181,194,0.35), 0 0 70px rgba(255,181,194,0.15); }
 
         .floating-heart {
-            position: fixed;
-            pointer-events: none;
-            z-index: 200;
-            animation: floatUpHeart 3.5s ease-out forwards;
-            opacity: 0;
+            position: fixed; pointer-events: none; z-index: 200;
+            animation: floatUpHeart 3.5s ease-out forwards; opacity: 0;
         }
         @keyframes floatUpHeart {
-            0% {
-                opacity: 1;
-                transform: translateY(0) scale(0.4) rotate(0deg);
-            }
-            40% {
-                opacity: 1;
-                transform: translateY(-180px) scale(1.1) rotate(15deg);
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-550px) scale(0.15) rotate(-25deg);
-            }
+            0% { opacity:1; transform:translateY(0) scale(0.4) rotate(0deg); }
+            40% { opacity:1; transform:translateY(-180px) scale(1.1) rotate(15deg); }
+            100% { opacity:0; transform:translateY(-550px) scale(0.15) rotate(-25deg); }
         }
         .sparkle-dot {
-            position: fixed;
-            pointer-events: none;
-            z-index: 201;
-            width: 5px;
-            height: 5px;
-            background: #fff;
-            border-radius: 50%;
+            position: fixed; pointer-events: none; z-index: 201;
+            width: 5px; height: 5px; background: #fff; border-radius: 50%;
             animation: sparkleAnim 1.6s ease-out forwards;
             box-shadow: 0 0 10px #ffb5c2, 0 0 20px #ffb5c2;
         }
         @keyframes sparkleAnim {
-            0% {
-                opacity: 1;
-                transform: scale(0) translate(0, 0);
-            }
-            50% {
-                opacity: 1;
-                transform: scale(1.6) translate(var(--sx), var(--sy));
-            }
-            100% {
-                opacity: 0;
-                transform: scale(0) translate(var(--ex), var(--ey));
-            }
+            0% { opacity:1; transform:scale(0) translate(0,0); }
+            50% { opacity:1; transform:scale(1.6) translate(var(--sx), var(--sy)); }
+            100% { opacity:0; transform:scale(0) translate(var(--ex), var(--ey)); }
         }
 
         .section-page {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 2.5rem 1rem;
+            min-height: 100vh; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 3rem 1rem; position: relative; overflow: hidden;
             background: linear-gradient(180deg, #0D0A0E 0%, #1a1018 35%, #0D0A0E 65%, #1a1018 100%);
-            position: relative;
-            overflow: hidden;
         }
-        .section-page.hidden {
-            display: none;
-        }
+        .section-page.hidden { display: none; }
 
         .pin-btn {
-            width: 65px;
-            height: 65px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.06);
-            border: 2px solid rgba(255, 255, 255, 0.15);
-            color: #fff;
-            font-size: 1.5rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 60px; height: 60px; border-radius: 50%;
+            background: rgba(255,255,255,0.06); border: 2px solid rgba(255,255,255,0.15);
+            color: #fff; font-size: 1.4rem; font-weight: 600; cursor: pointer;
+            transition: all 0.2s ease; display: flex; align-items: center; justify-content: center;
         }
-        .pin-btn:active {
-            background: rgba(255, 181, 194, 0.3);
-            border-color: #FFB5C2;
-            transform: scale(0.93);
-            box-shadow: 0 0 25px rgba(255, 181, 194, 0.4);
-        }
+        .pin-btn:active { background: rgba(255,181,194,0.3); border-color: #FFB5C2; transform: scale(0.93); }
         .pin-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
+            width: 12px; height: 12px; border-radius: 50%;
+            background: rgba(255,255,255,0.2); transition: all 0.3s ease;
         }
-        .pin-dot.filled {
-            background: #FFB5C2;
-            box-shadow: 0 0 12px rgba(255, 181, 194, 0.6);
-        }
+        .pin-dot.filled { background: #FFB5C2; box-shadow: 0 0 12px rgba(255,181,194,0.6); }
 
         .polaroid-card {
-            background: #fffef9;
-            padding: 8px 8px 28px 8px;
-            border-radius: 4px;
-            box-shadow: 2px 4px 18px rgba(0, 0, 0, 0.3);
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1.2);
-            position: absolute;
-            width: 130px;
+            background: #fffef9; padding: 8px 8px 26px 8px; border-radius: 4px;
+            box-shadow: 2px 4px 18px rgba(0,0,0,0.3); cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25,0.8,0.25,1.2);
+            position: absolute; width: 120px;
         }
-        .polaroid-card:hover {
-            transform: rotate(0deg) scale(1.12) !important;
-            z-index: 20;
-            box-shadow: 4px 8px 30px rgba(0, 0, 0, 0.5);
-        }
-        .polaroid-card img {
-            width: 100%;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 2px;
-            display: block;
-        }
-        .polaroid-card .caption {
-            text-align: center;
-            font-family: 'Dancing Script', cursive;
-            color: #5a3e4a;
-            font-size: 0.6rem;
-            margin-top: 4px;
-            line-height: 1.2;
-        }
+        .polaroid-card:hover { transform: rotate(0deg) scale(1.12) !important; z-index: 20; }
+        .polaroid-card img { width: 100%; height: 90px; object-fit: cover; border-radius: 2px; }
+        .polaroid-card .caption { text-align: center; font-family: 'Dancing Script', cursive; color: #5a3e4a; font-size: 0.6rem; margin-top: 3px; }
 
         .scratch-container {
-            position: relative;
-            width: 280px;
-            height: 180px;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-            cursor: pointer;
-            touch-action: none;
+            position: relative; width: 280px; height: 180px; border-radius: 16px;
+            overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            cursor: pointer; touch-action: none;
         }
-        .scratch-container canvas {
-            position: absolute;
-            inset: 0;
-            z-index: 2;
-            border-radius: 16px;
-            touch-action: none;
-        }
+        .scratch-container canvas { position: absolute; inset: 0; z-index: 2; border-radius: 16px; touch-action: none; }
         .scratch-message {
-            position: absolute;
-            inset: 0;
-            z-index: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #fff5f7, #ffe8ee);
-            border-radius: 16px;
-            font-family: 'Dancing Script', cursive;
-            font-size: 1.1rem;
-            color: #b76e79;
-            text-align: center;
-            padding: 20px;
-            font-weight: 600;
+            position: absolute; inset: 0; z-index: 1;
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg,#fff5f7,#ffe8ee); border-radius: 16px;
+            font-family: 'Dancing Script', cursive; font-size: 1rem; color: #b76e79;
+            text-align: center; padding: 20px; font-weight: 600;
         }
 
+        .btn-next {
+            background: linear-gradient(135deg, #e8879b, #b76e79);
+            border: none; cursor: pointer; color: #fff; font-weight: 600;
+            border-radius: 9999px; padding: 0.7rem 2.5rem;
+            box-shadow: 0 6px 25px rgba(184,87,106,0.4);
+            transition: all 0.3s ease; font-size: 1rem;
+            display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-next:hover { transform: scale(1.05); box-shadow: 0 10px 30px rgba(184,87,106,0.55); }
+        .btn-next:active { transform: scale(0.95); }
+
         @media (max-width: 640px) {
-            .pin-btn {
-                width: 55px;
-                height: 55px;
-                font-size: 1.3rem;
-            }
-            .polaroid-card {
-                width: 100px;
-            }
-            .polaroid-card img {
-                height: 75px;
-            }
-            .scratch-container {
-                width: 240px;
-                height: 150px;
-            }
+            .pin-btn { width: 52px; height: 52px; font-size: 1.2rem; }
+            .polaroid-card { width: 95px; }
+            .polaroid-card img { height: 70px; }
+            .scratch-container { width: 240px; height: 150px; }
         }
     </style>
 </head>
 <body>
 
     <!-- Loading Screen -->
-    <div id="loadingScreen" style="position:fixed;inset:0;z-index:9999;background:linear-gradient(180deg,#0D0A0E,#1a1018,#0D0A0E);display:flex;flex-direction:column;align-items:center;justify-content:center;">
-        <i class="fa-solid fa-lock text-5xl md:text-6xl animate-float" style="color:#FFB5C2; filter:drop-shadow(0 0 30px rgba(255,181,194,0.5));"></i>
-        <p class="text-cream/70 mt-4 text-base" style="font-family:'Dancing Script',cursive;">Memverifikasi akses kenangan rahasia...</p>
-        <div style="width:180px;height:3px;background:rgba(255,255,255,0.12);border-radius:10px;margin-top:16px;overflow:hidden;">
+    <div id="loadingScreen" style="position:fixed;inset:0;z-index:9999;background:#0D0A0E;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <i class="fa-solid fa-lock text-5xl animate-float" style="color:#FFB5C2;"></i>
+        <p class="text-cream/70 mt-4 text-sm" style="font-family:'Dancing Script',cursive;">Memverifikasi akses kenangan rahasia...</p>
+        <div style="width:160px;height:3px;background:rgba(255,255,255,0.1);border-radius:10px;margin-top:14px;overflow:hidden;">
             <div id="loadingBar" style="height:100%;background:linear-gradient(90deg,#e8879b,#ffb5c2,#d4a574);border-radius:10px;width:0%;"></div>
         </div>
     </div>
@@ -330,202 +202,202 @@
     <!-- LOCK SCREEN -->
     <section class="section-page" id="lockScreen">
         <div class="glass-pink max-w-md w-full p-8 md:p-10 text-center relative z-10" id="lockCard">
-            <i class="fa-solid fa-lock text-6xl md:text-7xl mb-4 animate-float" style="color:#FFB5C2; filter:drop-shadow(0 0 30px rgba(255,181,194,0.6));" id="lockIcon"></i>
+            <i class="fa-solid fa-lock text-6xl mb-4 animate-float" style="color:#FFB5C2;" id="lockIcon"></i>
             <h2 class="text-2xl md:text-3xl font-bold mb-2" style="font-family:'Playfair Display',serif; color:#FFB5C2;">Private Anniversary Access</h2>
             <p class="text-white/50 text-sm mb-6">"Masukkan PIN Rahasia untuk membuka kenangan spesial."</p>
-
-            <!-- PIN Dots -->
-            <div class="flex justify-center gap-4 mb-6" id="pinDots">
-                <div class="pin-dot" id="dot0"></div>
-                <div class="pin-dot" id="dot1"></div>
-                <div class="pin-dot" id="dot2"></div>
-                <div class="pin-dot" id="dot3"></div>
-                <div class="pin-dot" id="dot4"></div>
-                <div class="pin-dot" id="dot5"></div>
+            <div class="flex justify-center gap-3 mb-6" id="pinDots">
+                <div class="pin-dot" id="dot0"></div><div class="pin-dot" id="dot1"></div><div class="pin-dot" id="dot2"></div>
+                <div class="pin-dot" id="dot3"></div><div class="pin-dot" id="dot4"></div><div class="pin-dot" id="dot5"></div>
             </div>
-
-            <!-- Error Message -->
-            <p class="text-red-300 text-sm mb-4 hidden" id="pinError" style="font-family:'Dancing Script',cursive;"></p>
-            <p class="text-white/40 text-xs mb-6 hidden" id="pinAttemptsMsg" style="font-family:'Dancing Script',cursive;"></p>
-
-            <!-- Keypad -->
-            <div class="grid grid-cols-3 gap-3 max-w-[250px] mx-auto" id="keypad">
-                <button class="pin-btn key-btn" data-key="1">1</button>
-                <button class="pin-btn key-btn" data-key="2">2</button>
-                <button class="pin-btn key-btn" data-key="3">3</button>
-                <button class="pin-btn key-btn" data-key="4">4</button>
-                <button class="pin-btn key-btn" data-key="5">5</button>
-                <button class="pin-btn key-btn" data-key="6">6</button>
-                <button class="pin-btn key-btn" data-key="7">7</button>
-                <button class="pin-btn key-btn" data-key="8">8</button>
-                <button class="pin-btn key-btn" data-key="9">9</button>
-                <button class="pin-btn key-btn" data-key="clear" style="font-size:1rem;">⌫</button>
+            <p class="text-red-300 text-sm mb-3 hidden" id="pinError" style="font-family:'Dancing Script',cursive;"></p>
+            <p class="text-white/40 text-xs mb-4 hidden" id="pinAttemptsMsg" style="font-family:'Dancing Script',cursive;"></p>
+            <div class="grid grid-cols-3 gap-3 max-w-[230px] mx-auto" id="keypad">
+                <button class="pin-btn key-btn" data-key="1">1</button><button class="pin-btn key-btn" data-key="2">2</button><button class="pin-btn key-btn" data-key="3">3</button>
+                <button class="pin-btn key-btn" data-key="4">4</button><button class="pin-btn key-btn" data-key="5">5</button><button class="pin-btn key-btn" data-key="6">6</button>
+                <button class="pin-btn key-btn" data-key="7">7</button><button class="pin-btn key-btn" data-key="8">8</button><button class="pin-btn key-btn" data-key="9">9</button>
+                <button class="pin-btn key-btn" data-key="clear" style="font-size:0.9rem;">⌫</button>
                 <button class="pin-btn key-btn" data-key="0">0</button>
-                <button class="pin-btn key-btn" data-key="submit" style="font-size:1rem;">→</button>
+                <button class="pin-btn key-btn" data-key="submit" style="font-size:0.9rem;">→</button>
             </div>
         </div>
     </section>
 
-    <!-- MAIN ANNIVERSARY CONTENT (Hidden until unlocked) -->
-    <main id="mainContent" class="hidden">
+    <!-- MAIN CONTENT (hidden until unlocked) -->
+    <div id="mainContent" class="hidden">
 
         <!-- COVER PAGE -->
-        <section class="section-page" id="coverPage" style="background:linear-gradient(0deg,rgba(13,10,14,0.7),rgba(13,10,14,0.5)),url('https://picsum.photos/seed/annivcover/1200/800') center/cover no-repeat;">
-            <div class="text-center relative z-10 max-w-lg px-4" id="coverContent">
-                <i class="fa-solid fa-heart text-5xl md:text-6xl mb-5 animate-float" style="color:#FFB5C2; filter:drop-shadow(0 0 30px rgba(255,181,194,0.6));"></i>
+        <section class="section-page" id="sectionCover" style="background:linear-gradient(0deg,rgba(13,10,14,0.7),rgba(13,10,14,0.5)),url('https://picsum.photos/seed/annivcover/1200/800') center/cover no-repeat;">
+            <div class="text-center relative z-10 max-w-lg px-4">
+                <i class="fa-solid fa-heart text-5xl md:text-6xl mb-5 animate-float" style="color:#FFB5C2;"></i>
                 <h1 class="text-3xl md:text-5xl font-bold mb-4" style="font-family:'Playfair Display',serif; color:#FFB5C2;">❤️ HAPPY ANNIVERSARY ❤️</h1>
                 <div class="text-2xl md:text-3xl font-bold mb-2" style="font-family:'Dancing Script',cursive;">❤️ Vicky Satria Lindy</div>
                 <div class="text-lg text-white/50 mb-1">&</div>
                 <div class="text-2xl md:text-3xl font-bold mb-6" style="font-family:'Dancing Script',cursive;">❤️ Nadine Nurul ❤️</div>
-                <p class="text-white/60 text-sm md:text-base mb-8" style="font-family:'Dancing Script',cursive;">"Untuk seseorang yang selalu menjadi alasan aku tersenyum."</p>
-                <button id="btnOpenStory" class="px-10 py-4 rounded-full text-white font-bold text-lg glow-pink transition-all hover:scale-105 active:scale-95" style="background:linear-gradient(135deg,#e8879b,#b76e79); border:none; cursor:pointer;">
-                    💌 Buka Cerita Kita
-                </button>
+                <p class="text-white/60 text-sm mb-8" style="font-family:'Dancing Script',cursive;">"Untuk seseorang yang selalu menjadi alasan aku tersenyum."</p>
+                <button class="btn-next" data-next="sectionLetter">💌 Buka Cerita Kita <i class="fa-solid fa-arrow-right"></i></button>
             </div>
         </section>
 
-        <!-- SECTION: SURAT CINTA -->
-        <section class="section-page hidden" id="sectionLetter" style="min-height:auto; padding:4rem 1rem;">
-            <div class="glass-pink max-w-lg w-full p-8 md:p-10 relative z-10 text-center" id="letterCard">
+        <!-- SECTION 1: SURAT CINTA -->
+        <section class="section-page hidden" id="sectionLetter">
+            <div class="glass-pink max-w-lg w-full p-8 md:p-10 text-center relative z-10">
                 <i class="fa-solid fa-envelope-open-heart text-5xl mb-4" style="color:#FFB5C2;"></i>
                 <div id="letterText" class="text-white/80 text-lg md:text-xl leading-relaxed space-y-3" style="font-family:'Dancing Script',cursive; min-height:200px;"></div>
+                <button class="btn-next mt-8 hidden" data-next="sectionTimeline" id="btnAfterLetter">Lanjut ke Timeline <i class="fa-solid fa-arrow-right"></i></button>
             </div>
         </section>
 
-        <!-- SECTION: TIMELINE -->
-        <section class="section-page hidden" id="sectionTimeline" style="min-height:auto; padding:4rem 1rem;">
+        <!-- SECTION 2: TIMELINE -->
+        <section class="section-page hidden" id="sectionTimeline">
             <div class="max-w-2xl w-full px-4 relative">
                 <h2 class="text-2xl md:text-3xl font-bold text-center mb-10" style="font-family:'Playfair Display',serif; color:#FFB5C2;">📖 Timeline Cerita Kita</h2>
                 <div class="relative" id="timelineContainer">
                     <div style="position:absolute;left:50%;transform:translateX(-50%);width:2px;top:0;height:0;background:linear-gradient(180deg,#FFB5C2,#E8879B,#B76E79);border-radius:2px;" id="timelineLine"></div>
                     <div class="space-y-16 relative z-10" id="timelineItems"></div>
                 </div>
-            </div>
-        </section>
-
-        <!-- SECTION: GALERI FOTO POLAROID -->
-        <section class="section-page hidden" id="sectionPolaroid" style="min-height:auto; padding:4rem 1rem;">
-            <div class="max-w-5xl mx-auto w-full">
-                <h2 class="text-2xl md:text-3xl font-bold text-center mb-4" style="font-family:'Playfair Display',serif; color:#FFB5C2;">📸 Galeri Kenangan</h2>
-                <p class="text-white/50 text-center text-sm mb-6">Klik foto untuk melihat lebih jelas ✨</p>
-                <div class="relative mx-auto" id="polaroidWall" style="width:100%; height:450px; max-width:600px; border-radius:16px; overflow:hidden; background:rgba(255,255,255,0.02);"></div>
-            </div>
-        </section>
-
-        <!-- SECTION: LOVE COUNTER -->
-        <section class="section-page hidden" id="sectionCounter" style="min-height:auto; padding:4rem 1rem;">
-            <div class="max-w-4xl mx-auto w-full">
-                <h2 class="text-2xl md:text-3xl font-bold text-center mb-8" style="font-family:'Playfair Display',serif; color:#FFB5C2;">⏳ Hitungan Cinta Kita</h2>
-                <div class="grid grid-cols-2 md:grid-cols-5 gap-4" id="counterGrid">
-                    <div class="glass p-4 text-center"><div class="text-3xl font-extrabold" style="color:#FFB5C2;" id="cdHari">0</div><p class="text-white/50 text-xs mt-1">❤️ Hari</p></div>
-                    <div class="glass p-4 text-center"><div class="text-3xl font-extrabold" style="color:#FFB5C2;" id="cdBulan">0</div><p class="text-white/50 text-xs mt-1">❤️ Bulan</p></div>
-                    <div class="glass p-4 text-center"><div class="text-3xl font-extrabold" style="color:#FFB5C2;" id="cdTahun">0</div><p class="text-white/50 text-xs mt-1">❤️ Tahun</p></div>
-                    <div class="glass p-4 text-center"><div class="text-3xl font-extrabold" style="color:#FFB5C2;" id="cdFoto">42</div><p class="text-white/50 text-xs mt-1">📸 Foto</p></div>
-                    <div class="glass p-4 text-center"><div class="text-3xl font-extrabold" style="color:#FFB5C2;" id="cdKenangan">108</div><p class="text-white/50 text-xs mt-1">💫 Kenangan</p></div>
+                <div class="text-center mt-10">
+                    <button class="btn-next" data-next="sectionPolaroid">Lanjut ke Galeri <i class="fa-solid fa-arrow-right"></i></button>
                 </div>
             </div>
         </section>
 
-        <!-- SECTION: LOVE LETTER -->
-        <section class="section-page hidden" id="sectionLoveLetter" style="min-height:auto; padding:4rem 1rem;">
+        <!-- SECTION 3: GALERI POLAROID -->
+        <section class="section-page hidden" id="sectionPolaroid">
+            <div class="max-w-5xl mx-auto w-full">
+                <h2 class="text-2xl md:text-3xl font-bold text-center mb-4" style="font-family:'Playfair Display',serif; color:#FFB5C2;">📸 Galeri Kenangan</h2>
+                <p class="text-white/50 text-center text-sm mb-6">Klik foto untuk melihat lebih jelas ✨</p>
+                <div class="relative mx-auto" id="polaroidWall" style="width:100%;height:450px;max-width:600px;border-radius:16px;overflow:hidden;background:rgba(255,255,255,0.02);"></div>
+                <div class="text-center mt-8">
+                    <button class="btn-next" data-next="sectionCounter">Lanjut ke Hitungan Cinta <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: LOVE COUNTER -->
+        <section class="section-page hidden" id="sectionCounter">
+            <div class="max-w-4xl mx-auto w-full">
+                <h2 class="text-2xl md:text-3xl font-bold text-center mb-8" style="font-family:'Playfair Display',serif; color:#FFB5C2;">⏳ Hitungan Cinta Kita</h2>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                    <div class="glass p-4 text-center"><div class="text-3xl font-extrabold" style="color:#FFB5C2;" id="cdHari">0</div><p class="text-white/50 text-xs mt-1">❤️ Hari</p></div>
+                    <div class="glass p-4 text-center"><div class="text-3xl font-extrabold" style="color:#FFB5C2;" id="cdBulan">0</div><p class="text-white/50 text-xs mt-1">❤️ Bulan</p></div>
+                    <div class="glass p-4 text-center"><div class="text-3xl font-extrabold" style="color:#FFB5C2;" id="cdTahun">0</div><p class="text-white/50 text-xs mt-1">❤️ Tahun</p></div>
+                    <div class="glass p-4 text-center"><div class="text-3xl font-extrabold" style="color:#FFB5C2;">42</div><p class="text-white/50 text-xs mt-1">📸 Foto</p></div>
+                    <div class="glass p-4 text-center"><div class="text-3xl font-extrabold" style="color:#FFB5C2;">108</div><p class="text-white/50 text-xs mt-1">💫 Kenangan</p></div>
+                </div>
+                <div class="text-center mt-10">
+                    <button class="btn-next" data-next="sectionLoveLetter">Lanjut ke Surat Cinta <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: LOVE LETTER -->
+        <section class="section-page hidden" id="sectionLoveLetter">
             <div class="glass-pink max-w-lg w-full p-8 md:p-10 text-center relative z-10">
                 <i class="fa-solid fa-heart text-5xl mb-4 animate-heartbeat" style="color:#FFB5C2;"></i>
                 <p class="text-white/80 text-lg leading-relaxed space-y-3" style="font-family:'Dancing Script',cursive;">
-                    "Jika aku bisa mengulang semuanya...<br>
+                    "Jika aku bisa mengulang semuanya...<br><br>
                     Aku tetap ingin bertemu kamu.<br>
                     Aku tetap ingin jatuh cinta kepada kamu.<br>
                     Dan aku tetap ingin merayakan hari ini bersamamu ❤️"
                 </p>
+                <button class="btn-next mt-8" data-next="sectionReasons">Lanjut ke 100 Alasan <i class="fa-solid fa-arrow-right"></i></button>
             </div>
         </section>
 
-        <!-- SECTION: 100 ALASAN -->
-        <section class="section-page hidden" id="sectionReasons" style="min-height:auto; padding:4rem 1rem;">
+        <!-- SECTION 6: 100 ALASAN -->
+        <section class="section-page hidden" id="sectionReasons">
             <div class="max-w-3xl mx-auto w-full">
                 <h2 class="text-2xl md:text-3xl font-bold text-center mb-6" style="font-family:'Playfair Display',serif; color:#FFB5C2;">💯 100 Alasan Aku Mencintaimu</h2>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3" id="reasonsGrid"></div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mb-10" id="reasonsGrid"></div>
+                <div class="text-center">
+                    <button class="btn-next" data-next="sectionScratch">Lanjut ke Pesan Rahasia <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
             </div>
         </section>
 
-        <!-- SECTION: SCRATCH CARD -->
-        <section class="section-page hidden" id="sectionScratch" style="min-height:auto; padding:4rem 1rem;">
+        <!-- SECTION 7: SCRATCH CARD -->
+        <section class="section-page hidden" id="sectionScratch">
             <div class="text-center">
                 <h2 class="text-2xl md:text-3xl font-bold mb-4" style="font-family:'Playfair Display',serif; color:#FFB5C2;">🎫 Pesan Rahasia</h2>
                 <p class="text-white/50 text-sm mb-4">"Gesek untuk membuka pesan spesial ❤️"</p>
                 <div class="scratch-container mx-auto" id="scratchContainer">
-                    <div class="scratch-message" id="scratchMessage">Aku mencintaimu lebih dari yang kamu tahu ❤️</div>
+                    <div class="scratch-message">Aku mencintaimu lebih dari yang kamu tahu ❤️</div>
                     <canvas id="scratchCanvas"></canvas>
                 </div>
                 <p class="text-white/40 text-xs mt-2" id="scratchHint">Gosok dengan jari atau mouse ✨</p>
+                <button class="btn-next mt-8 hidden" data-next="sectionGift" id="btnAfterScratch">Lanjut ke Hadiah <i class="fa-solid fa-arrow-right"></i></button>
             </div>
         </section>
 
-        <!-- SECTION: SECRET GIFT BOX -->
-        <section class="section-page hidden" id="sectionGift" style="min-height:auto; padding:4rem 1rem;">
+        <!-- SECTION 8: SECRET GIFT BOX -->
+        <section class="section-page hidden" id="sectionGift">
             <div class="text-center relative z-10">
                 <h2 class="text-2xl md:text-3xl font-bold mb-6" style="font-family:'Playfair Display',serif; color:#FFB5C2;">🎁 Secret Gift Box</h2>
                 <div class="cursor-pointer mx-auto mb-4" id="giftBoxContainer">
-                    <div style="position:relative; display:inline-block; perspective:800px;" id="giftBox3D">
-                        <div style="position:absolute;inset:-20px;background:radial-gradient(circle,rgba(255,181,194,0.3) 0%,transparent 70%);border-radius:50%;z-index:-1;animation:pulseGlow 2.5s ease-in-out infinite;"></div>
-                        <i class="fa-solid fa-gift text-7xl md:text-8xl animate-float" style="color:#e8879b; filter:drop-shadow(0 10px 30px rgba(232,135,155,0.5));" id="giftIcon"></i>
+                    <div style="position:relative;display:inline-block;" id="giftBox3D">
+                        <div style="position:absolute;inset:-20px;background:radial-gradient(circle,rgba(255,181,194,0.3),transparent 70%);border-radius:50%;z-index:-1;animation:pulseGlow 2.5s ease-in-out infinite;"></div>
+                        <i class="fa-solid fa-gift text-7xl md:text-8xl animate-float" style="color:#e8879b;" id="giftIcon"></i>
                     </div>
                 </div>
-                <button id="btnOpenGift" class="px-8 py-3 rounded-full text-white font-semibold transition-all hover:scale-105 active:scale-95" style="background:linear-gradient(135deg,#e8879b,#b76e79); border:none; cursor:pointer;">🎁 Buka Hadiah</button>
+                <button id="btnOpenGift" class="btn-next">🎁 Buka Hadiah</button>
                 <div id="giftReveal" class="glass-pink max-w-md w-full p-6 mt-6 hidden text-center">
                     <p class="text-white/80 text-lg" style="font-family:'Dancing Script',cursive;">📸 Album Rahasia<br>💌 Surat Tambahan<br>🎵 Lagu Spesial<br>❤️ Pesan Tersembunyi</p>
                 </div>
+                <button class="btn-next mt-6 hidden" data-next="sectionCertificate" id="btnAfterGift">Lanjut ke Sertifikat <i class="fa-solid fa-arrow-right"></i></button>
             </div>
         </section>
 
-        <!-- SECTION: LOVE CERTIFICATE -->
-        <section class="section-page hidden" id="sectionCertificate" style="min-height:auto; padding:4rem 1rem;">
+        <!-- SECTION 9: LOVE CERTIFICATE -->
+        <section class="section-page hidden" id="sectionCertificate">
             <div class="max-w-lg mx-auto w-full">
-                <div id="certificateCard" style="background:#FFFDF7; border-radius:12px; padding:2.5rem 2rem; text-align:center; border:3px solid #D4A574; box-shadow:0 20px 50px rgba(0,0,0,0.4), 0 0 0 8px #FFFDF7, 0 0 0 12px #D4A574, 0 0 50px rgba(212,165,116,0.3);">
-                    <div style="color:#D4A574; font-size:1.2rem;">✦ ✦ ✦</div>
-                    <h2 class="text-xl md:text-2xl font-bold mt-3 mb-2" style="font-family:'Playfair Display',serif; color:#5D4E37;">ANNIVERSARY CERTIFICATE</h2>
-                    <hr style="border-color:#D4A574; margin:0.8rem 2rem;">
+                <div id="certificateCard" style="background:#FFFDF7;border-radius:12px;padding:2.5rem 2rem;text-align:center;border:3px solid #D4A574;box-shadow:0 20px 50px rgba(0,0,0,0.4),0 0 0 8px #FFFDF7,0 0 0 12px #D4A574,0 0 50px rgba(212,165,116,0.3);">
+                    <div style="color:#D4A574;">✦ ✦ ✦</div>
+                    <h2 class="text-xl md:text-2xl font-bold mt-3 mb-2" style="font-family:'Playfair Display',serif;color:#5D4E37;">ANNIVERSARY CERTIFICATE</h2>
+                    <hr style="border-color:#D4A574;margin:0.8rem 2rem;">
                     <p class="text-sm text-darkbrown/70 mt-4 font-serif">Diberikan kepada:</p>
-                    <p class="text-2xl md:text-3xl font-bold mt-2" style="font-family:'Dancing Script',cursive; color:#D4A574;">❤️ Nadine Nurul ❤️</p>
+                    <p class="text-2xl md:text-3xl font-bold mt-2" style="font-family:'Dancing Script',cursive;color:#D4A574;">❤️ Nadine Nurul ❤️</p>
                     <p class="text-xs text-darkbrown/60 mt-3 font-serif">Sebagai pasangan terbaik, teman terbaik, pendengar terbaik, dan orang tersayang.</p>
                     <p class="text-xs text-darkbrown/40 mt-4" id="certDate"></p>
-                    <div style="color:#D4A574; font-size:1.2rem; margin-top:1rem;">✦ ✦ ✦</div>
+                    <div style="color:#D4A574;margin-top:1rem;">✦ ✦ ✦</div>
                 </div>
-                <div class="text-center mt-6">
-                    <button id="btnSaveCertificate" class="px-8 py-3 rounded-full text-white font-semibold transition-all hover:scale-105" style="background:linear-gradient(135deg,#d4a574,#b8860b); border:none; cursor:pointer;">📸 Simpan Sertifikat</button>
+                <div class="text-center mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+                    <button id="btnSaveCertificate" class="px-6 py-3 rounded-full text-white font-semibold transition-all hover:scale-105" style="background:linear-gradient(135deg,#d4a574,#b8860b);border:none;cursor:pointer;">📸 Simpan Sertifikat</button>
+                    <button class="btn-next" data-next="sectionCountdown">Lanjut ke Countdown <i class="fa-solid fa-arrow-right"></i></button>
                 </div>
             </div>
         </section>
 
-        <!-- SECTION: COUNTDOWN -->
-        <section class="section-page hidden" id="sectionCountdown" style="min-height:auto; padding:4rem 1rem;">
+        <!-- SECTION 10: COUNTDOWN -->
+        <section class="section-page hidden" id="sectionCountdown">
             <div class="max-w-lg mx-auto w-full text-center">
-                <h2 class="text-2xl md:text-3xl font-bold mb-8" style="font-family:'Playfair Display',serif; color:#FFB5C2;">⌛ Menuju Anniversary Berikutnya</h2>
-                <div class="grid grid-cols-4 gap-3">
+                <h2 class="text-2xl md:text-3xl font-bold mb-8" style="font-family:'Playfair Display',serif;color:#FFB5C2;">⌛ Menuju Anniversary Berikutnya</h2>
+                <div class="grid grid-cols-4 gap-3 mb-10">
                     <div class="glass p-4 text-center"><div class="text-2xl md:text-3xl font-extrabold" style="color:#FFB5C2;" id="nextDays">0</div><p class="text-white/50 text-xs mt-1">📅 Hari</p></div>
                     <div class="glass p-4 text-center"><div class="text-2xl md:text-3xl font-extrabold" style="color:#FFB5C2;" id="nextHours">0</div><p class="text-white/50 text-xs mt-1">🕒 Jam</p></div>
                     <div class="glass p-4 text-center"><div class="text-2xl md:text-3xl font-extrabold" style="color:#FFB5C2;" id="nextMinutes">0</div><p class="text-white/50 text-xs mt-1">⏰ Menit</p></div>
                     <div class="glass p-4 text-center"><div class="text-2xl md:text-3xl font-extrabold" style="color:#FFB5C2;" id="nextSeconds">0</div><p class="text-white/50 text-xs mt-1">⌛ Detik</p></div>
                 </div>
+                <button class="btn-next" data-next="sectionFinal">Lanjut ke Penutup <i class="fa-solid fa-arrow-right"></i></button>
             </div>
         </section>
 
-        <!-- SECTION: FINAL -->
-        <section class="section-page" id="sectionFinal" style="background:linear-gradient(0deg,rgba(13,10,14,0.75),rgba(13,10,14,0.55)),url('https://picsum.photos/seed/annivfinal/1200/800') center/cover no-repeat;">
+        <!-- SECTION 11: FINAL -->
+        <section class="section-page hidden" id="sectionFinal" style="background:linear-gradient(0deg,rgba(13,10,14,0.75),rgba(13,10,14,0.55)),url('https://picsum.photos/seed/annivfinal/1200/800') center/cover no-repeat;">
             <div class="text-center relative z-10 max-w-lg px-4">
-                <div id="finalSlideshow" class="mb-8" style="width:180px;height:180px;border-radius:50%;overflow:hidden;margin:0 auto;border:4px solid #FFB5C2;box-shadow:0 0 40px rgba(255,181,194,0.5);">
+                <div id="finalSlideshow" class="mb-8" style="width:160px;height:160px;border-radius:50%;overflow:hidden;margin:0 auto;border:4px solid #FFB5C2;box-shadow:0 0 40px rgba(255,181,194,0.5);">
                     <img src="https://picsum.photos/seed/annivslide1/400/400" alt="Final" style="width:100%;height:100%;object-fit:cover;" id="finalSlideImg">
                 </div>
-                <h2 class="text-2xl md:text-3xl font-bold mb-4" style="font-family:'Playfair Display',serif; color:#FFB5C2;">❤️ HAPPY ANNIVERSARY ❤️</h2>
+                <h2 class="text-2xl md:text-3xl font-bold mb-4" style="font-family:'Playfair Display',serif;color:#FFB5C2;">❤️ HAPPY ANNIVERSARY ❤️</h2>
                 <p class="text-white/70 text-sm md:text-base mb-3" style="font-family:'Dancing Script',cursive;">"Terima kasih sudah bertahan."</p>
                 <p class="text-white/60 text-sm mb-3" style="font-family:'Dancing Script',cursive;">"Terima kasih sudah memilih aku setiap hari."</p>
-                <p class="text-white/70 text-sm md:text-base mb-6" style="font-family:'Dancing Script',cursive;">"Dan terima kasih karena menjadi rumah yang selalu ingin aku pulang ❤️"</p>
+                <p class="text-white/70 text-sm md:text-base" style="font-family:'Dancing Script',cursive;">"Dan terima kasih karena menjadi rumah yang selalu ingin aku pulang ❤️"</p>
             </div>
         </section>
 
-    </main>
+    </div>
 
     <!-- Music Button -->
-    <div id="musicBtn" style="position:fixed;bottom:24px;right:24px;z-index:500;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.08);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;color:#fff;box-shadow:0 4px 20px rgba(0,0,0,0.3);" class="hidden" id="musicFloatBtn">
+    <div id="musicBtn" style="position:fixed;bottom:24px;right:24px;z-index:500;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.08);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;color:#fff;box-shadow:0 4px 20px rgba(0,0,0,0.3);" class="hidden" id="musicFloatBtn">
         <i class="fa-solid fa-music"></i>
     </div>
     <audio id="bgMusic" loop preload="auto" style="display:none;"><source src="" type="audio/mpeg"></audio>
@@ -537,7 +409,7 @@
             const MAX_ATTEMPTS = 3;
             const anniversaryDate = new Date('2024-01-01');
 
-            const letterText = [
+            const letterParagraphs = [
                 "Sayangku tersayang ❤️",
                 "Setiap hari bersamamu adalah hadiah terindah yang pernah aku terima.",
                 "Aku tidak bisa membayangkan hidup tanpa senyummu, tanpa suaramu, tanpa kehadiranmu.",
@@ -546,21 +418,21 @@
             ];
 
             const timelineData = [
-                { icon: '👋', title: 'Pertama Kenalan', desc: 'Saat takdir mempertemukan kita.' },
-                { icon: '💬', title: 'Pertama Chat', desc: 'Pesan pertama yang bikin deg-degan.' },
-                { icon: '📹', title: 'Pertama VC', desc: 'Melihat senyummu untuk pertama kali.' },
-                { icon: '🤝', title: 'Pertama Ketemu', desc: 'Detik pertama yang tak terlupakan.' },
-                { icon: '🍽️', title: 'First Date', desc: 'Hari itu terasa begitu sempurna.' },
-                { icon: '💝', title: 'Anniversary Pertama', desc: 'Merayakan cinta yang bertumbuh.' },
-                { icon: '❤️', title: 'Hari Ini', desc: 'Setiap hari bersamamu anugerah.' },
+                { icon:'👋', title:'Pertama Kenalan', desc:'Saat takdir mempertemukan kita.' },
+                { icon:'💬', title:'Pertama Chat', desc:'Pesan pertama yang bikin deg-degan.' },
+                { icon:'📹', title:'Pertama VC', desc:'Melihat senyummu untuk pertama kali.' },
+                { icon:'🤝', title:'Pertama Ketemu', desc:'Detik pertama yang tak terlupakan.' },
+                { icon:'🍽️', title:'First Date', desc:'Hari itu terasa begitu sempurna.' },
+                { icon:'💝', title:'Anniversary Pertama', desc:'Merayakan cinta yang bertumbuh.' },
+                { icon:'❤️', title:'Hari Ini', desc:'Setiap hari bersamamu anugerah.' },
             ];
 
             const reasons = [
-                'Karena senyummu', 'Karena perhatianmu', 'Karena kesabaranmu', 'Karena kamu selalu ada',
-                'Karena caramu bicara', 'Karena ketulusanmu', 'Karena kejujuranmu', 'Karena kebaikan hatimu',
-                'Karena kamu pengertian', 'Karena kamu setia', 'Karena caramu mencintaiku', 'Karena kamu spesial',
-                'Karena kamu unik', 'Karena kamu adalah kamu', 'Karena kita saling melengkapi', 'Karena matamu',
-                'Karena tawamu', 'Karena pelukanmu', 'Karena ciumanmu', 'Karena kehadiranmu menenangkan',
+                'Karena senyummu','Karena perhatianmu','Karena kesabaranmu','Karena kamu selalu ada',
+                'Karena caramu bicara','Karena ketulusanmu','Karena kejujuranmu','Karena kebaikan hatimu',
+                'Karena kamu pengertian','Karena kamu setia','Karena caramu mencintaiku','Karena kamu spesial',
+                'Karena kamu unik','Karena kamu adalah kamu','Karena kita saling melengkapi','Karena matamu',
+                'Karena tawamu','Karena pelukanmu','Karena kehadiranmu menenangkan','Karena kamu segalanya',
             ];
 
             // ==================== DOM ====================
@@ -568,7 +440,7 @@
             const loadingBar = document.getElementById('loadingBar');
             const lockScreen = document.getElementById('lockScreen');
             const mainContent = document.getElementById('mainContent');
-            const musicFloatBtn = document.getElementById('musicFloatBtn');
+            const musicFloatBtn = document.getElementById('musicBtn');
             const bgMusic = document.getElementById('bgMusic');
 
             let pinInput = '';
@@ -576,241 +448,188 @@
             let unlocked = false;
 
             // ==================== UTILITY ====================
-            function spawnHearts(count = 5) {
-                const hearts = ['❤️', '💕', '💗', '💖', '💝', '💘'];
-                for (let i = 0; i < count; i++) {
-                    const h = document.createElement('span');
-                    h.className = 'floating-heart';
-                    h.textContent = hearts[Math.floor(Math.random() * hearts.length)];
-                    h.style.left = Math.random() * 90 + 5 + '%';
-                    h.style.top = Math.random() * 50 + 30 + '%';
-                    h.style.fontSize = (Math.random() * 20 + 14) + 'px';
-                    document.body.appendChild(h);
-                    setTimeout(() => h.remove(), 3500);
+            function spawnHearts(count=5) {
+                const hearts = ['❤️','💕','💗','💖','💝','💘'];
+                for(let i=0;i<count;i++){
+                    const h=document.createElement('span');h.className='floating-heart';
+                    h.textContent=hearts[Math.floor(Math.random()*hearts.length)];
+                    h.style.left=Math.random()*90+5+'%';h.style.top=Math.random()*50+30+'%';
+                    h.style.fontSize=(Math.random()*20+14)+'px';document.body.appendChild(h);
+                    setTimeout(()=>h.remove(),3500);
                 }
             }
-
-            function spawnSparkles(count = 8) {
-                for (let i = 0; i < count; i++) {
-                    const s = document.createElement('span');
-                    s.className = 'sparkle-dot';
-                    s.style.left = Math.random() * 85 + 7 + '%';
-                    s.style.top = Math.random() * 60 + 20 + '%';
-                    s.style.setProperty('--sx', (Math.random() * 35 - 17) + 'px');
-                    s.style.setProperty('--sy', (Math.random() * -50 - 10) + 'px');
-                    s.style.setProperty('--ex', (Math.random() * 60 - 30) + 'px');
-                    s.style.setProperty('--ey', (Math.random() * -90 - 20) + 'px');
-                    document.body.appendChild(s);
-                    setTimeout(() => s.remove(), 1800);
+            function spawnSparkles(count=6) {
+                for(let i=0;i<count;i++){
+                    const s=document.createElement('span');s.className='sparkle-dot';
+                    s.style.left=Math.random()*85+7+'%';s.style.top=Math.random()*60+20+'%';
+                    s.style.setProperty('--sx',(Math.random()*35-17)+'px');s.style.setProperty('--sy',(Math.random()*-50-10)+'px');
+                    s.style.setProperty('--ex',(Math.random()*60-30)+'px');s.style.setProperty('--ey',(Math.random()*-90-20)+'px');
+                    document.body.appendChild(s);setTimeout(()=>s.remove(),1800);
                 }
             }
-
             function fireConfetti() {
-                if (typeof confetti === 'function') {
-                    confetti({ particleCount: 100, spread: 70, origin: { y: 0.5 }, colors: ['#FFB5C2', '#E8879B',
-                            '#B76E79', '#D4A574', '#fff'
-                        ] });
-                }
-            }
-
-            function startMusic() {
-                musicFloatBtn.classList.remove('hidden');
-                bgMusic.volume = 0.35;
-                bgMusic.play().then(() => {
-                    musicFloatBtn.innerHTML = '<i class="fa-solid fa-music"></i>';
-                }).catch(() => {});
-                musicFloatBtn.addEventListener('click', () => {
-                    if (bgMusic.paused) { bgMusic.play();
-                        musicFloatBtn.innerHTML = '<i class="fa-solid fa-music"></i>'; } else { bgMusic.pause();
-                        musicFloatBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>'; }
-                });
+                if(typeof confetti==='function'){confetti({particleCount:100,spread:70,origin:{y:0.5},colors:['#FFB5C2','#E8879B','#B76E79','#D4A574','#fff']});}
             }
 
             // ==================== LOADING ====================
-            let progress = 0;
-            const loadInterval = setInterval(() => {
-                progress += Math.random() * 10 + 5;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(loadInterval);
-                    loadingBar.style.width = '100%';
-                    setTimeout(() => {
-                        gsap.to(loadingScreen, { opacity: 0, duration: 0.6, onComplete: () => { loadingScreen
-                                .style.display = 'none'; } });
-                    }, 400);
-                }
-                loadingBar.style.width = progress + '%';
-            }, 150);
+            let progress=0;
+            const loadInterval=setInterval(()=>{
+                progress+=Math.random()*10+5;
+                if(progress>=100){progress=100;clearInterval(loadInterval);loadingBar.style.width='100%';
+                    setTimeout(()=>{gsap.to(loadingScreen,{opacity:0,duration:0.6,onComplete:()=>loadingScreen.style.display='none'});},400);}
+                loadingBar.style.width=progress+'%';
+            },150);
 
             // ==================== PIN SYSTEM ====================
-            function updatePinDots() {
-                for (let i = 0; i < 6; i++) {
-                    const dot = document.getElementById('dot' + i);
-                    if (i < pinInput.length) dot.classList.add('filled');
-                    else dot.classList.remove('filled');
-                }
+            function updatePinDots(){
+                for(let i=0;i<6;i++){const dot=document.getElementById('dot'+i);if(i<pinInput.length)dot.classList.add('filled');else dot.classList.remove('filled');}
             }
-
-            function clearPinError() {
+            function clearPinError(){
                 document.getElementById('pinError').classList.add('hidden');
                 document.getElementById('pinAttemptsMsg').classList.add('hidden');
             }
-
-            function shakeLockCard() {
-                const card = document.getElementById('lockCard');
-                gsap.fromTo(card, { x: -8 }, { x: 8, duration: 0.07, repeat: 5, yoyo: true, ease: 'power1.inOut',
-                    onComplete: () => gsap.set(card, { x: 0 }) });
+            function shakeLockCard(){
+                const card=document.getElementById('lockCard');
+                gsap.fromTo(card,{x:-8},{x:8,duration:0.07,repeat:5,yoyo:true,ease:'power1.inOut',onComplete:()=>gsap.set(card,{x:0})});
             }
-
-            function handlePinSubmit() {
-                if (pinInput.length < 6) return;
-                if (pinInput === CORRECT_PIN) {
-                    unlockSuccess();
-                } else {
-                    attempts++;
-                    pinInput = '';
-                    updatePinDots();
-                    shakeLockCard();
-                    if (attempts >= MAX_ATTEMPTS) {
+            function handlePinSubmit(){
+                if(pinInput.length<6)return;
+                if(pinInput===CORRECT_PIN){unlockSuccess();}
+                else{
+                    attempts++;pinInput='';updatePinDots();shakeLockCard();
+                    if(attempts>=MAX_ATTEMPTS){
                         document.getElementById('pinError').classList.remove('hidden');
-                        document.getElementById('pinError').textContent = '❌ PIN Tidak Valid';
+                        document.getElementById('pinError').textContent='❌ PIN Tidak Valid';
                         document.getElementById('pinAttemptsMsg').classList.remove('hidden');
-                        document.getElementById('pinAttemptsMsg').textContent =
-                            '"Hanya orang spesial yang tahu PIN ini ❤️"';
-                        document.getElementById('keypad').style.pointerEvents = 'none';
-                        document.getElementById('keypad').style.opacity = '0.5';
-                    } else {
+                        document.getElementById('pinAttemptsMsg').textContent='"Hanya orang spesial yang tahu PIN ini ❤️"';
+                        document.getElementById('keypad').style.pointerEvents='none';
+                        document.getElementById('keypad').style.opacity='0.5';
+                    }else{
                         document.getElementById('pinError').classList.remove('hidden');
-                        document.getElementById('pinError').textContent = '❌ PIN Tidak Valid';
+                        document.getElementById('pinError').textContent='❌ PIN Tidak Valid';
                         document.getElementById('pinAttemptsMsg').classList.remove('hidden');
-                        document.getElementById('pinAttemptsMsg').textContent = '"Coba lagi ya ❤️"';
+                        document.getElementById('pinAttemptsMsg').textContent='"Coba lagi ya ❤️"';
                     }
                 }
             }
-
-            function unlockSuccess() {
-                unlocked = true;
-                const lockIcon = document.getElementById('lockIcon');
-                lockIcon.className =
-                    'fa-solid fa-lock-open text-6xl md:text-7xl mb-4 animate-float';
-                lockIcon.style.color = '#D4A574';
-
-                const tl = gsap.timeline();
-                tl.to('#lockCard', { scale: 1.3, opacity: 0, duration: 0.6, ease: 'power2.in' })
-                    .call(() => {
-                        lockScreen.style.display = 'none';
-                        mainContent.classList.remove('hidden');
-                        initAllSections();
-                        fireConfetti();
-                        spawnHearts(15);
-                        spawnSparkles(12);
-                        startMusic();
-                    });
+            function unlockSuccess(){
+                unlocked=true;
+                document.getElementById('lockIcon').className='fa-solid fa-lock-open text-6xl mb-4 animate-float';
+                document.getElementById('lockIcon').style.color='#D4A574';
+                const tl=gsap.timeline();
+                tl.to('#lockCard',{scale:1.3,opacity:0,duration:0.6,ease:'power2.in'}).call(()=>{
+                    lockScreen.style.display='none';
+                    mainContent.classList.remove('hidden');
+                    document.getElementById('sectionCover').classList.remove('hidden');
+                    initAllSections();
+                    fireConfetti();spawnHearts(15);spawnSparkles(12);
+                    startMusic();
+                });
             }
 
-            // Keypad event
-            document.querySelectorAll('.key-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    if (unlocked) return;
-                    const key = btn.dataset.key;
-                    if (key === 'clear') {
-                        pinInput = pinInput.slice(0, -1);
-                        clearPinError();
-                    } else if (key === 'submit') {
-                        handlePinSubmit();
-                    } else if (pinInput.length < 6) {
-                        pinInput += key;
-                        clearPinError();
-                    }
+            document.querySelectorAll('.key-btn').forEach(btn=>{
+                btn.addEventListener('click',()=>{
+                    if(unlocked)return;
+                    const key=btn.dataset.key;
+                    if(key==='clear'){pinInput=pinInput.slice(0,-1);clearPinError();}
+                    else if(key==='submit'){handlePinSubmit();}
+                    else if(pinInput.length<6){pinInput+=key;clearPinError();}
                     updatePinDots();
-                    if (pinInput.length === 6 && key !== 'clear' && key !== 'submit') {
-                        setTimeout(handlePinSubmit, 200);
-                    }
+                    if(pinInput.length===6&&key!=='clear'&&key!=='submit')setTimeout(handlePinSubmit,200);
                 });
             });
+            document.addEventListener('keydown',(e)=>{
+                if(unlocked)return;
+                if(e.key>='0'&&e.key<='9'&&pinInput.length<6){pinInput+=e.key;updatePinDots();if(pinInput.length===6)setTimeout(handlePinSubmit,200);}
+                else if(e.key==='Backspace'){pinInput=pinInput.slice(0,-1);updatePinDots();}
+                else if(e.key==='Enter'){handlePinSubmit();}
+            });
 
-            // Keyboard support
-            document.addEventListener('keydown', (e) => {
-                if (unlocked) return;
-                if (e.key >= '0' && e.key <= '9' && pinInput.length < 6) {
-                    pinInput += e.key;
-                    updatePinDots();
-                    if (pinInput.length === 6) setTimeout(handlePinSubmit, 200);
-                } else if (e.key === 'Backspace') {
-                    pinInput = pinInput.slice(0, -1);
-                    updatePinDots();
-                } else if (e.key === 'Enter') {
-                    handlePinSubmit();
+            // ==================== MUSIC ====================
+            function startMusic(){
+                musicFloatBtn.classList.remove('hidden');
+                bgMusic.volume=0.35;
+                bgMusic.play().then(()=>{musicFloatBtn.innerHTML='<i class="fa-solid fa-music"></i>';}).catch(()=>{});
+                musicFloatBtn.addEventListener('click',()=>{
+                    if(bgMusic.paused){bgMusic.play();musicFloatBtn.innerHTML='<i class="fa-solid fa-music"></i>';}
+                    else{bgMusic.pause();musicFloatBtn.innerHTML='<i class="fa-solid fa-volume-xmark"></i>';}
+                });
+            }
+
+            // ==================== NAVIGASI TOMBOL LANJUT ====================
+            document.addEventListener('click',(e)=>{
+                if(e.target.classList.contains('btn-next')||e.target.closest('.btn-next')){
+                    const btn=e.target.classList.contains('btn-next')?e.target:e.target.closest('.btn-next');
+                    const nextId=btn.dataset.next;
+                    if(nextId){
+                        const currentSection=btn.closest('.section-page');
+                        const nextSection=document.getElementById(nextId);
+                        if(currentSection&&nextSection){
+                            // Sembunyikan section saat ini
+                            gsap.to(currentSection,{opacity:0,y:-30,duration:0.4,onComplete:()=>{
+                                currentSection.classList.add('hidden');
+                                // Tampilkan section berikutnya
+                                nextSection.classList.remove('hidden');
+                                gsap.fromTo(nextSection,{opacity:0,y:30},{opacity:1,y:0,duration:0.6,ease:'power2.out'});
+                                nextSection.scrollIntoView({behavior:'smooth'});
+                                // Trigger animasi khusus
+                                if(nextId==='sectionTimeline')animateTimeline();
+                                if(nextId==='sectionCounter')updateCounters();
+                                if(nextId==='sectionCountdown')startCountdown();
+                            }});
+                        }
+                    }
                 }
             });
 
-            // ==================== INISIALISASI SEMUA SECTION ====================
-            function showAllSections() {
-                document.querySelectorAll('#mainContent .section-page').forEach(s => s.classList.remove(
-                    'hidden'));
-                document.getElementById('sectionLetter').classList.remove('hidden');
-                document.getElementById('sectionTimeline').classList.remove('hidden');
-                document.getElementById('sectionPolaroid').classList.remove('hidden');
-                document.getElementById('sectionCounter').classList.remove('hidden');
-                document.getElementById('sectionLoveLetter').classList.remove('hidden');
-                document.getElementById('sectionReasons').classList.remove('hidden');
-                document.getElementById('sectionScratch').classList.remove('hidden');
-                document.getElementById('sectionGift').classList.remove('hidden');
-                document.getElementById('sectionCertificate').classList.remove('hidden');
-                document.getElementById('sectionCountdown').classList.remove('hidden');
-            }
-
-            function initAllSections() {
-                showAllSections();
-                initCounters();
-                renderTimeline();
-                animateTimeline();
-                renderPolaroidWall();
+            // ==================== INISIALISASI ====================
+            function initAllSections(){
+                // Init data
+                document.getElementById('certDate').textContent=new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
+                // Letter typing
                 startLetterTyping();
+                // Timeline
+                renderTimeline();
+                // Polaroid
+                renderPolaroidWall();
+                // Reasons
                 renderReasons();
+                // Scratch card
                 initScratchCard();
+                // Gift box
                 initGiftBox();
-                document.getElementById('certDate').textContent = new Date().toLocaleDateString('id-ID', { day: 'numeric',
-                    month: 'long', year: 'numeric' });
+                // Certificate save
+                document.getElementById('btnSaveCertificate').addEventListener('click',saveCertificate);
+                // Final slideshow
                 initFinalSlideshow();
-                initCountdown();
-                document.getElementById('btnSaveCertificate').addEventListener('click', saveCertificate);
-
-                // GSAP animasi untuk setiap section
-                gsap.utils.toArray('#mainContent .section-page').forEach(section => {
-                    gsap.fromTo(section, { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.8,
-                        ease: 'power2.out', scrollTrigger: { trigger: section, start: 'top 80%',
-                            toggleActions: 'play none none none' } });
-                });
             }
 
-            // Cover button
-            document.getElementById('btnOpenStory').addEventListener('click', () => {
-                document.getElementById('sectionLetter').scrollIntoView({ behavior: 'smooth' });
-            });
-
-            // Counter
-            function initCounters() {
-                const now = new Date();
-                const diff = now - anniversaryDate;
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const months = Math.floor(days / 30.44);
-                const years = Math.floor(days / 365.25);
-                document.getElementById('cdHari').textContent = days.toLocaleString('id-ID');
-                document.getElementById('cdBulan').textContent = months.toLocaleString('id-ID');
-                document.getElementById('cdTahun').textContent = years.toLocaleString('id-ID');
+            function updateCounters(){
+                const now=new Date();const diff=now-anniversaryDate;
+                document.getElementById('cdHari').textContent=Math.floor(diff/(1000*60*60*24)).toLocaleString('id-ID');
+                document.getElementById('cdBulan').textContent=Math.floor(diff/(1000*60*60*24)/30.44).toLocaleString('id-ID');
+                document.getElementById('cdTahun').textContent=Math.floor(diff/(1000*60*60*24)/365.25).toLocaleString('id-ID');
             }
 
-            // Timeline
-            function renderTimeline() {
-                const container = document.getElementById('timelineItems');
-                container.innerHTML = '';
-                timelineData.forEach((item, i) => {
-                    const side = i % 2 === 0 ? 'left' : 'right';
-                    const div = document.createElement('div');
-                    div.className =
-                        `flex items-center w-full ${side==='right'?'flex-row-reverse':''} timeline-item opacity-0 translate-y-8`;
-                    div.innerHTML = `
+            function startLetterTyping(){
+                const container=document.getElementById('letterText');container.innerHTML='';
+                let p=0,c=0;
+                function type(){
+                    if(p>=letterParagraphs.length){document.getElementById('btnAfterLetter').classList.remove('hidden');return;}
+                    const para=letterParagraphs[p];
+                    if(c<para.length){container.innerHTML+=para.charAt(c);c++;setTimeout(type,35);}
+                    else{container.innerHTML+='<br><br>';c=0;p++;setTimeout(type,400);}
+                }
+                type();
+            }
+
+            function renderTimeline(){
+                const container=document.getElementById('timelineItems');container.innerHTML='';
+                timelineData.forEach((item,i)=>{
+                    const side=i%2===0?'left':'right';
+                    const div=document.createElement('div');
+                    div.className=`flex items-center w-full ${side==='right'?'flex-row-reverse':''} timeline-item opacity-0 translate-y-8`;
+                    div.innerHTML=`
                         <div class="w-5/12 ${side==='right'?'text-right pr-5':'text-left pl-5'}">
                             <div class="glass p-3 rounded-2xl inline-block">
                                 <span class="text-2xl">${item.icon}</span>
@@ -819,194 +638,81 @@
                             </div>
                         </div>
                         <div class="w-2/12 flex justify-center"><div class="w-4 h-4 rounded-full bg-pinkpastel" style="box-shadow:0 0 12px rgba(255,181,194,0.6);"></div></div>
-                        <div class="w-5/12"></div>
-                    `;
+                        <div class="w-5/12"></div>`;
                     container.appendChild(div);
                 });
             }
-
-            function animateTimeline() {
-                gsap.fromTo('.timeline-item', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.12,
-                    ease: 'power2.out', scrollTrigger: { trigger: '#timelineContainer', start: 'top 70%' } });
-                gsap.to('#timelineLine', { height: '100%', duration: 2, ease: 'power2.inOut', scrollTrigger: { trigger: '#timelineContainer',
-                        start: 'top 60%', end: 'bottom 80%', scrub: 1 } });
+            function animateTimeline(){
+                gsap.fromTo('.timeline-item',{opacity:0,y:40},{opacity:1,y:0,duration:0.5,stagger:0.12,ease:'power2.out'});
+                gsap.to('#timelineLine',{height:'100%',duration:2,ease:'power2.inOut'});
             }
 
-            // Polaroid Wall
-            function renderPolaroidWall() {
-                const wall = document.getElementById('polaroidWall');
-                const seeds = ['pol1', 'pol2', 'pol3', 'pol4', 'pol5', 'pol6', 'pol7', 'pol8'];
-                seeds.forEach((s, i) => {
-                    const card = document.createElement('div');
-                    card.className = 'polaroid-card';
-                    card.style.left = (10 + Math.random() * 400) + 'px';
-                    card.style.top = (10 + Math.random() * 320) + 'px';
-                    card.style.transform = `rotate(${(Math.random()*20)-10}deg)`;
-                    card.innerHTML =
-                        `<img src="https://picsum.photos/seed/${s}/300/250" alt="Polaroid" loading="lazy"><p class="caption">Kenangan ${i+1}</p>`;
-                    card.addEventListener('click', () => { alert('Foto kenangan #' + (i + 1) + ' ❤️'); });
+            function renderPolaroidWall(){
+                const wall=document.getElementById('polaroidWall');wall.innerHTML='';
+                const seeds=['pol1','pol2','pol3','pol4','pol5','pol6','pol7','pol8'];
+                seeds.forEach((s,i)=>{
+                    const card=document.createElement('div');card.className='polaroid-card';
+                    card.style.left=(10+Math.random()*400)+'px';card.style.top=(10+Math.random()*320)+'px';
+                    card.style.transform=`rotate(${(Math.random()*20)-10}deg)`;
+                    card.innerHTML=`<img src="https://picsum.photos/seed/${s}/300/250" alt="Polaroid" loading="lazy"><p class="caption">Kenangan ${i+1}</p>`;
+                    card.addEventListener('click',()=>{alert('Foto kenangan #'+(i+1)+' ❤️');});
                     wall.appendChild(card);
                 });
             }
 
-            // Letter Typing
-            function startLetterTyping() {
-                const container = document.getElementById('letterText');
-                container.innerHTML = '';
-                let p = 0,
-                    c = 0;
-
-                function type() {
-                    if (p >= letterText.length) return;
-                    const para = letterText[p];
-                    if (c < para.length) { container.innerHTML += para.charAt(c);
-                        c++;
-                        setTimeout(type, 35); } else { container.innerHTML += '<br><br>';
-                        c = 0;
-                        p++;
-                        setTimeout(type, 400); }
-                }
-                type();
+            function renderReasons(){
+                const grid=document.getElementById('reasonsGrid');
+                grid.innerHTML=reasons.map(r=>`<div class="glass-pink p-3 rounded-xl text-center text-xs text-white/70" style="font-family:'Dancing Script',cursive;">❤️ ${r}</div>`).join('');
             }
 
-            // Reasons
-            function renderReasons() {
-                const grid = document.getElementById('reasonsGrid');
-                grid.innerHTML = reasons.map(r => `
-                    <div class="glass-pink p-3 rounded-xl text-center text-xs text-white/70" style="font-family:'Dancing Script',cursive;">❤️ ${r}</div>
-                `).join('');
+            function initScratchCard(){
+                const canvas=document.getElementById('scratchCanvas');
+                const container=document.getElementById('scratchContainer');
+                const rect=container.getBoundingClientRect();
+                const w=rect.width||280,h=rect.height||180;
+                canvas.width=w;canvas.height=h;
+                const ctx=canvas.getContext('2d');
+                ctx.fillStyle='#e8879b';ctx.fillRect(0,0,w,h);
+                ctx.fillStyle='#c96a7d';
+                for(let i=0;i<40;i++){ctx.beginPath();ctx.arc(Math.random()*w,Math.random()*h,Math.random()*15+5,0,Math.PI*2);ctx.fill();}
+                ctx.globalCompositeOperation='destination-out';
+                let isScratching=false,revealed=false;
+                function getPos(e){const r=canvas.getBoundingClientRect();return{x:(e.touches?e.touches[0].clientX:e.clientX)-r.left,y:(e.touches?e.touches[0].clientY:e.clientY)-r.top};}
+                function scratch(e){if(!isScratching||revealed)return;e.preventDefault();const pos=getPos(e);ctx.beginPath();ctx.arc(pos.x,pos.y,22,0,Math.PI*2);ctx.fill();checkProgress();}
+                function checkProgress(){const imageData=ctx.getImageData(0,0,w,h);let transparent=0;for(let i=3;i<imageData.data.length;i+=4){if(imageData.data[i]===0)transparent++;}if(transparent/(imageData.data.length/4)*100>45&&!revealed){revealed=true;gsap.to(canvas,{opacity:0,duration:0.5});document.getElementById('scratchHint').textContent='Pesan terbuka! ❤️';document.getElementById('btnAfterScratch').classList.remove('hidden');spawnSparkles(6);}}
+                canvas.addEventListener('mousedown',(e)=>{isScratching=true;scratch(e);});canvas.addEventListener('mousemove',scratch);
+                canvas.addEventListener('mouseup',()=>{isScratching=false;});canvas.addEventListener('mouseleave',()=>{isScratching=false;});
+                canvas.addEventListener('touchstart',(e)=>{isScratching=true;scratch(e);});canvas.addEventListener('touchmove',scratch);
+                canvas.addEventListener('touchend',()=>{isScratching=false;});
             }
 
-            // Scratch Card
-            function initScratchCard() {
-                const canvas = document.getElementById('scratchCanvas');
-                const container = document.getElementById('scratchContainer');
-                const rect = container.getBoundingClientRect();
-                const w = rect.width || 280;
-                const h = rect.height || 180;
-                canvas.width = w;
-                canvas.height = h;
-                const ctx = canvas.getContext('2d');
-                ctx.fillStyle = '#e8879b';
-                ctx.fillRect(0, 0, w, h);
-                ctx.fillStyle = '#c96a7d';
-                for (let i = 0; i < 40; i++) {
-                    ctx.beginPath();
-                    ctx.arc(Math.random() * w, Math.random() * h, Math.random() * 15 + 5, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-                ctx.globalCompositeOperation = 'destination-out';
-                let isScratching = false;
-                let revealed = false;
-
-                function getPos(e) {
-                    const r = canvas.getBoundingClientRect();
-                    const cx = e.touches ? e.touches[0].clientX : e.clientX;
-                    const cy = e.touches ? e.touches[0].clientY : e.clientY;
-                    return { x: cx - r.left, y: cy - r.top };
-                }
-
-                function scratch(e) {
-                    if (!isScratching || revealed) return;
-                    e.preventDefault();
-                    const pos = getPos(e);
-                    ctx.beginPath();
-                    ctx.arc(pos.x, pos.y, 22, 0, Math.PI * 2);
-                    ctx.fill();
-                    checkProgress();
-                }
-
-                function checkProgress() {
-                    const imageData = ctx.getImageData(0, 0, w, h);
-                    const pixels = imageData.data;
-                    let transparent = 0;
-                    for (let i = 3; i < pixels.length; i += 4) { if (pixels[i] === 0) transparent++; }
-                    if (transparent / (pixels.length / 4) * 100 > 45 && !revealed) {
-                        revealed = true;
-                        gsap.to(canvas, { opacity: 0, duration: 0.5 });
-                        document.getElementById('scratchHint').textContent = 'Pesan terbuka! ❤️';
-                        spawnSparkles(6);
-                    }
-                }
-
-                canvas.addEventListener('mousedown', (e) => { isScratching = true;
-                    scratch(e); });
-                canvas.addEventListener('mousemove', scratch);
-                canvas.addEventListener('mouseup', () => { isScratching = false; });
-                canvas.addEventListener('mouseleave', () => { isScratching = false; });
-                canvas.addEventListener('touchstart', (e) => { isScratching = true;
-                    scratch(e); });
-                canvas.addEventListener('touchmove', scratch);
-                canvas.addEventListener('touchend', () => { isScratching = false; });
-            }
-
-            // Gift Box
-            function initGiftBox() {
-                let giftOpened = false;
-                document.getElementById('btnOpenGift').addEventListener('click', () => {
-                    if (giftOpened) return;
-                    giftOpened = true;
-                    const tl = gsap.timeline();
-                    tl.to('#giftBox3D', { scale: 1.4, duration: 0.3, ease: 'back.out(1.7)' })
-                        .to('#giftIcon', { rotation: -15, duration: 0.15 })
-                        .to('#giftIcon', { rotation: 15, duration: 0.15 })
-                        .to('#giftIcon', { rotation: 0, duration: 0.1 })
-                        .to('#giftBox3D', { scale: 2.5, opacity: 0, duration: 0.5, ease: 'power2.in' })
-                        .call(() => {
-                            document.getElementById('giftReveal').classList.remove('hidden');
-                            gsap.fromTo('#giftReveal', { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1,
-                                duration: 0.7, ease: 'back.out(1.7)' });
-                            fireConfetti();
-                            spawnHearts(10);
-                            spawnSparkles(8);
-                        });
+            function initGiftBox(){
+                let giftOpened=false;
+                document.getElementById('btnOpenGift').addEventListener('click',()=>{
+                    if(giftOpened)return;giftOpened=true;
+                    const tl=gsap.timeline();
+                    tl.to('#giftBox3D',{scale:1.4,duration:0.3,ease:'back.out(1.7)'})
+                    .to('#giftIcon',{rotation:-15,duration:0.15}).to('#giftIcon',{rotation:15,duration:0.15})
+                    .to('#giftIcon',{rotation:0,duration:0.1}).to('#giftBox3D',{scale:2.5,opacity:0,duration:0.5,ease:'power2.in'})
+                    .call(()=>{document.getElementById('giftReveal').classList.remove('hidden');document.getElementById('btnAfterGift').classList.remove('hidden');
+                        gsap.fromTo('#giftReveal',{scale:0.5,opacity:0},{scale:1,opacity:1,duration:0.7,ease:'back.out(1.7)'});fireConfetti();spawnHearts(10);spawnSparkles(8);});
                 });
             }
 
-            // Save Certificate
-            async function saveCertificate() {
-                const el = document.getElementById('certificateCard');
-                try {
-                    const canvas = await html2canvas(el, { backgroundColor: '#FFFDF7', scale: 2 });
-                    const link = document.createElement('a');
-                    link.download = 'anniversary-certificate.png';
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
-                } catch (e) { alert('Gagal menyimpan, coba lagi.'); }
+            async function saveCertificate(){
+                const el=document.getElementById('certificateCard');
+                try{const canvas=await html2canvas(el,{backgroundColor:'#FFFDF7',scale:2});const link=document.createElement('a');link.download='anniversary-certificate.png';link.href=canvas.toDataURL('image/png');link.click();}catch(e){alert('Gagal menyimpan, coba lagi.');}
             }
 
-            // Countdown
-            function initCountdown() {
-                function update() {
-                    const now = new Date();
-                    const nextAnniv = new Date(now.getFullYear(), 0, 1);
-                    if (now > nextAnniv) nextAnniv.setFullYear(nextAnniv.getFullYear() + 1);
-                    const diff = nextAnniv - now;
-                    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-                    document.getElementById('nextDays').textContent = days;
-                    document.getElementById('nextHours').textContent = hours;
-                    document.getElementById('nextMinutes').textContent = minutes;
-                    document.getElementById('nextSeconds').textContent = seconds;
-                }
-                update();
-                setInterval(update, 1000);
+            function startCountdown(){
+                function update(){const now=new Date();let nextAnniv=new Date(now.getFullYear(),0,1);if(now>nextAnniv)nextAnniv.setFullYear(nextAnniv.getFullYear()+1);const diff=nextAnniv-now;document.getElementById('nextDays').textContent=Math.floor(diff/(1000*60*60*24));document.getElementById('nextHours').textContent=Math.floor((diff%(1000*60*60*24))/(1000*60*60));document.getElementById('nextMinutes').textContent=Math.floor((diff%(1000*60*60))/(1000*60));document.getElementById('nextSeconds').textContent=Math.floor((diff%(1000*60))/1000);}
+                update();setInterval(update,1000);
             }
 
-            // Final Slideshow
-            function initFinalSlideshow() {
-                const img = document.getElementById('finalSlideImg');
-                const seeds = ['annivslide1', 'annivslide2', 'annivslide3', 'annivslide4', 'annivslide5'];
-                let idx = 0;
-                setInterval(() => { idx = (idx + 1) % seeds.length;
-                    img.src = `https://picsum.photos/seed/${seeds[idx]}/400/400`; }, 3000);
-            }
+            function initFinalSlideshow(){const img=document.getElementById('finalSlideImg');const seeds=['annivslide1','annivslide2','annivslide3','annivslide4','annivslide5'];let idx=0;setInterval(()=>{idx=(idx+1)%seeds.length;img.src=`https://picsum.photos/seed/${seeds[idx]}/400/400`;},3000);}
 
             // Global hearts
-            setInterval(() => { if (!document.hidden) spawnHearts(1); }, 5000);
-
+            setInterval(()=>{if(!document.hidden)spawnHearts(1);},5000);
             gsap.registerPlugin(ScrollTrigger);
         })();
     </script>
