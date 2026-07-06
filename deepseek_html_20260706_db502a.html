@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VLCrave Digital Studio | Website Premium</title>
+  <meta name="description" content="VLCrave Digital Studio - Website ucapan, anniversary, ulang tahun, wisuda, undangan digital premium." />
+
+  <!-- Tailwind CSS CDN + konfigurasi warna & animasi -->
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#6C63FF',
+            secondary: '#00D4FF',
+            accent: '#FF6B9D',
+            darkbg: '#0A0A1A',
+            cardbg: '#12122A',
+            textsoft: '#B0B0D0',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+              '50%': { transform: 'translateY(-20px) rotate(1deg)' },
+            },
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Google Fonts & Font Awesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js">
+  </script>
+
+  <style>
+    * {
+      margin: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0A0A1A;
+      color: #E0E0F0;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0A0A1A;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #6C63FF, #00D4FF);
+      border-radius: 10px;
+    }
+    .glass {
+      background: rgba(18, 18, 42, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(108, 99, 255, 0.15);
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+    .glass-light {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+    }
+    .glow-primary {
+      box-shadow: 0 0 40px rgba(108, 99, 255, 0.3), 0 0 80px rgba(108, 99, 255, 0.1);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #6C63FF, #00D4FF, #FF6B9D);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .floating-wa {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 999;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #25D366;
+      box-shadow: 0 8px 30px rgba(37, 211, 102, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      animation: pulse 2s infinite;
+    }
+    .floating-wa:hover {
+      transform: scale(1.1);
+      box-shadow: 0 12px 40px rgba(37, 211, 102, 0.6);
+    }
+    .back-to-top {
+      position: fixed;
+      bottom: 100px;
+      right: 28px;
+      z-index: 998;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(108, 99, 255, 0.8);
+      box-shadow: 0 8px 25px rgba(108, 99, 255, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: white;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+    .back-to-top.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .counter-number {
+      font-variant-numeric: tabular-nums;
+      font-family: 'Inter', monospace;
+    }
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .portfolio-card {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .portfolio-card:hover {
+      transform: translateY(-8px) !important;
+      box-shadow: 0 30px 60px rgba(108, 99, 255, 0.25);
+    }
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .navbar-fixed {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 900;
+      padding: 12px 16px;
+    }
+    #mobileMenu {
+      transition: opacity 0.3s ease;
+    }
+
+    /* loading spin */
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading Screen -->
+  <div id="loadingScreen" style="position:fixed;inset:0;z-index:9999;background:#0A0A1A;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.6s;">
+    <div style="width:60px;height:60px;border:3px solid rgba(108,99,255,0.2);border-top-color:#6C63FF;border-radius:50%;animation:spin 1s linear infinite;"></div>
+    <p class="text-textsoft mt-4 text-sm tracking-wider">VLCrave Digital Studio</p>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar-fixed">
+    <div class="glass max-w-7xl mx-auto flex items-center justify-between px-5 py-2.5">
+      <a href="#" class="text-2xl font-bold gradient-text font-display tracking-tight">VLCrave</a>
+      <div class="hidden md:flex items-center gap-6 text-sm font-medium">
+        <a href="#hero" class="text-white/80 hover:text-white transition">Home</a>
+        <a href="#portfolio" class="text-white/80 hover:text-white transition">Portfolio</a>
+        <a href="#testimoni" class="text-white/80 hover:text-white transition">Testimoni</a>
+        <a href="#faq" class="text-white/80 hover:text-white transition">FAQ</a>
+        <a href="#order" class="px-6 py-2.5 rounded-full text-white font-semibold" style="background:linear-gradient(135deg,#6C63FF,#00D4FF);">Order</a>
+      </div>
+      <button id="btnOpenMenu" class="md:hidden text-white text-2xl p-2"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div id="mobileMenu" style="display:none; position:fixed; inset:0; z-index:950; background:rgba(10,10,26,0.97); backdrop-filter:blur(16px); flex-direction:column; align-items:center; justify-content:center; gap:2rem;">
+    <button id="btnCloseMenu" style="position:absolute; top:1.5rem; right:1.5rem; background:none; border:none; color:white; font-size:2rem; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+    <a href="#hero" class="text-white/80 text-xl font-medium menu-link">Home</a>
+    <a href="#portfolio" class="text-white/80 text-xl font-medium menu-link">Portfolio</a>
+    <a href="#testimoni" class="text-white/80 text-xl font-medium menu-link">Testimoni</a>
+    <a href="#faq" class="text-white/80 text-xl font-medium menu-link">FAQ</a>
+    <a href="#order" class="px-8 py-3 rounded-full text-white font-semibold text-xl menu-link" style="background:linear-gradient(135deg,#6C63FF,#00D4FF);">Order</a>
+  </div>
+
+  <!-- HERO -->
+  <section id="hero" class="relative min-h-screen flex items-center pt-24 pb-16 px-6">
+    <div class="max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center">
+      <div>
+        <span class="text-sm font-mono text-secondary tracking-widest uppercase">VLCrave Digital Studio</span>
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold font-display mt-4 leading-tight">
+          <span class="gradient-text">Website Digital Premium</span><br />
+          <span class="text-white">untuk Momen Spesial</span>
+        </h1>
+        <p class="text-textsoft mt-6 text-base md:text-lg max-w-lg">Buat website ucapan, anniversary, ulang tahun, wisuda, permintaan maaf, undangan digital, dan website custom lainnya dengan desain eksklusif.</p>
+        <div class="flex flex-col sm:flex-row gap-4 mt-8">
+          <a href="#portfolio" class="px-8 py-4 rounded-full text-white font-semibold text-center transition-all hover:scale-105" style="background:linear-gradient(135deg,#6C63FF,#00D4FF);">✨ Lihat Portfolio</a>
+          <a href="https://wa.me/6282181670112?text=Halo%20VLCrave,%20saya%20ingin%20memesan%20website%20digital." target="_blank" class="px-8 py-4 rounded-full font-semibold text-center border-2 border-primary text-primary hover:bg-primary/10 transition-all hover:scale-105">📱 Order Sekarang</a>
+        </div>
+      </div>
+      <div class="relative flex justify-center">
+        <div class="animate-float">
+          <div class="glass p-4 rounded-3xl glow-primary w-72 md:w-80">
+            <div class="bg-gradient-to-br from-primary to-secondary rounded-2xl h-48 flex items-center justify-center text-6xl">❤️</div>
+            <div class="mt-3 space-y-2 px-2"><div class="h-2 bg-white/20 rounded-full w-3/4"></div><div class="h-2 bg-white/10 rounded-full w-1/2"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATISTIK -->
+  <section class="py-16 px-6">
+    <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div class="glass p-6 text-center glow-primary"><div class="text-3xl md:text-4xl font-extrabold gradient-text counter-number" data-target="500">0</div><p class="text-textsoft text-sm mt-2">Website Dibuat</p></div>
+      <div class="glass p-6 text-center"><div class="text-3xl md:text-4xl font-extrabold gradient-text counter-number" data-target="300">0</div><p class="text-textsoft text-sm mt-2">Pelanggan Puas</p></div>
+      <div class="glass p-6 text-center"><div class="text-3xl md:text-4xl font-extrabold gradient-text counter-number" data-target="50">0</div><p class="text-textsoft text-sm mt-2">Template Premium</p></div>
+      <div class="glass p-6 text-center"><div class="text-3xl md:text-4xl font-extrabold gradient-text">24/7</div><p class="text-textsoft text-sm mt-2">Support</p></div>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO -->
+  <section id="portfolio" class="py-20 px-6">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-14">
+        <span class="text-sm font-mono text-secondary tracking-widest uppercase">Portfolio & Paket</span>
+        <h2 class="text-3xl md:text-5xl font-bold font-display mt-3">Pilih Website Impianmu</h2>
+        <p class="text-textsoft mt-4 max-w-xl mx-auto">Klik kartu untuk melihat detail, demo, dan harga. Setiap paket sudah termasuk fitur lengkap.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="portfolioGrid"></div>
+    </div>
+  </section>
+
+  <!-- MODAL DETAIL -->
+  <div id="detailModal" style="display:none; position:fixed; inset:0; z-index:960; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:1rem;">
+    <div class="glass max-w-2xl w-full p-6 md:p-8 relative max-h-[90vh] overflow-y-auto" id="detailModalContent"></div>
+  </div>
+
+  <!-- CARA ORDER -->
+  <section class="py-20 px-6">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-14"><span class="text-sm font-mono text-secondary tracking-widest uppercase">Cara Order</span><h2 class="text-3xl md:text-5xl font-bold font-display mt-3">Mudah & Cepat</h2></div>
+      <div class="overflow-x-auto hide-scrollbar -mx-4 px-4">
+        <div class="flex gap-4 md:gap-6 pb-4" style="min-width:max-content;">
+          <div class="glass p-6 text-center flex-shrink-0 w-40 md:w-48"><span class="text-4xl font-bold gradient-text">1</span><p class="font-semibold mt-3 text-sm">Pilih Paket</p></div>
+          <div class="flex items-center flex-shrink-0 text-2xl text-secondary/50"><i class="fa-solid fa-chevron-right"></i></div>
+          <div class="glass p-6 text-center flex-shrink-0 w-40 md:w-48"><span class="text-4xl font-bold gradient-text">2</span><p class="font-semibold mt-3 text-sm">Klik Order</p></div>
+          <div class="flex items-center flex-shrink-0 text-2xl text-secondary/50"><i class="fa-solid fa-chevron-right"></i></div>
+          <div class="glass p-6 text-center flex-shrink-0 w-40 md:w-48"><span class="text-4xl font-bold gradient-text">3</span><p class="font-semibold mt-3 text-sm">Kirim Data</p></div>
+          <div class="flex items-center flex-shrink-0 text-2xl text-secondary/50"><i class="fa-solid fa-chevron-right"></i></div>
+          <div class="glass p-6 text-center flex-shrink-0 w-40 md:w-48"><span class="text-4xl font-bold gradient-text">4</span><p class="font-semibold mt-3 text-sm">Dikerjakan</p></div>
+          <div class="flex items-center flex-shrink-0 text-2xl text-secondary/50"><i class="fa-solid fa-chevron-right"></i></div>
+          <div class="glass p-6 text-center flex-shrink-0 w-40 md:w-48"><span class="text-4xl font-bold gradient-text">5</span><p class="font-semibold mt-3 text-sm">Selesai</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONI -->
+  <section id="testimoni" class="py-20 px-6 bg-cardbg/50">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-14"><span class="text-sm font-mono text-secondary tracking-widest uppercase">Testimoni</span><h2 class="text-3xl md:text-5xl font-bold font-display mt-3">Apa Kata Mereka?</h2></div>
+      <div class="overflow-x-auto hide-scrollbar -mx-4 px-4"><div class="flex gap-4 md:gap-6 pb-4" id="testimoniTrack" style="min-width:max-content;"></div></div>
+      <div class="flex justify-center gap-2 mt-6" id="testimoniDots"></div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="py-20 px-6">
+    <div class="max-w-3xl mx-auto">
+      <div class="text-center mb-14"><span class="text-sm font-mono text-secondary tracking-widest uppercase">FAQ</span><h2 class="text-3xl md:text-5xl font-bold font-display mt-3">Pertanyaan Umum</h2></div>
+      <div class="space-y-4" id="faqContainer"></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="order" class="py-20 px-6 relative overflow-hidden" style="background:linear-gradient(135deg,#6C63FF20,#00D4FF20,#FF6B9D20);">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="text-3xl md:text-5xl font-bold font-display gradient-text">Siap Membuat Momen Spesial Lebih Berkesan?</h2>
+      <p class="text-textsoft mt-4 text-lg">Pesan sekarang dan dapatkan website premium untuk momen spesialmu.</p>
+      <a href="https://wa.me/6282181670112?text=Halo%20VLCrave,%20saya%20ingin%20memesan%20website%20digital." target="_blank" class="inline-block mt-8 px-10 py-5 rounded-full text-white font-bold text-lg hover:scale-105 transition-all glow-primary" style="background:linear-gradient(135deg,#6C63FF,#00D4FF);">✨ ORDER SEKARANG</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="py-12 px-6 border-t border-white/5">
+    <div class="max-w-6xl mx-auto text-center">
+      <h3 class="text-2xl font-bold gradient-text font-display">VLCrave Digital Studio</h3>
+      <div class="flex justify-center gap-6 mt-6 text-2xl">
+        <a href="https://wa.me/6282181670112" target="_blank" class="text-white/60 hover:text-green-400 transition"><i class="fa-brands fa-whatsapp"></i></a>
+        <a href="#" class="text-white/60 hover:text-pink-400 transition"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" class="text-white/60 hover:text-blue-400 transition"><i class="fa-brands fa-tiktok"></i></a>
+        <a href="mailto:vlcrave@email.com" class="text-white/60 hover:text-red-400 transition"><i class="fa-solid fa-envelope"></i></a>
+      </div>
+      <p class="text-textsoft text-sm mt-6">© 2026 VLCrave Digital Studio. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Floating WA & Back to Top -->
+  <a href="https://wa.me/6282181670112?text=Halo%20VLCrave,%20saya%20ingin%20memesan%20website%20digital." target="_blank" class="floating-wa"><i class="fa-brands fa-whatsapp"></i></a>
+  <div class="back-to-top" id="backToTop"><i class="fa-solid fa-arrow-up"></i></div>
+
+  <script>
+    (function() {
+      // LOADING
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          const ls = document.getElementById('loadingScreen');
+          ls.style.opacity = '0';
+          setTimeout(() => ls.style.display = 'none', 600);
+          animateCounters();
+        }, 1000);
+      });
+
+      function animateCounters() {
+        document.querySelectorAll('.counter-number[data-target]').forEach(el => {
+          const target = parseInt(el.dataset.target);
+          let current = 0;
+          const increment = target / 60;
+          const interval = setInterval(() => {
+            current += increment;
+            if (current >= target) { current = target;
+              clearInterval(interval); }
+            el.textContent = Math.floor(current) + '+';
+          }, 30);
+        });
+      }
+
+      // MOBILE MENU
+      const mobileMenu = document.getElementById('mobileMenu');
+      const btnOpen = document.getElementById('btnOpenMenu');
+      const btnClose = document.getElementById('btnCloseMenu');
+      const menuLinks = mobileMenu.querySelectorAll('.menu-link');
+
+      function openMenu() { mobileMenu.style.display = 'flex';
+        document.body.style.overflow = 'hidden'; }
+
+      function closeMenu() { mobileMenu.style.display = 'none';
+        document.body.style.overflow = ''; }
+
+      btnOpen.addEventListener('click', (e) => { e.stopPropagation();
+        openMenu(); });
+      btnClose.addEventListener('click', (e) => { e.stopPropagation();
+        closeMenu(); });
+      menuLinks.forEach(link => link.addEventListener('click', closeMenu));
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && mobileMenu.style.display === 'flex')
+          closeMenu(); });
+
+      // BACK TO TOP
+      const backToTop = document.getElementById('backToTop');
+      window.addEventListener('scroll', () => backToTop.classList.toggle('show', window.scrollY > 600));
+      backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+      // PORTFOLIO DATA
+      const portfolioData = [
+        { id: 'anniversary', name: 'Happy Anniversary Premium', category: 'Anniversary',
+          desc: 'Website anniversary romantis dengan animasi premium, timeline cerita, galeri foto, dan musik latar.',
+          price: 'Rp20.000', paket: 'PREMIUM', emoji: '💑', fitur: ['10 Foto Kenangan', 'Timeline Cerita',
+            'Musik Otomatis', 'PIN Rahasia', 'Balasan WhatsApp', 'Animasi Premium', 'Mobile Responsive'
+          ] },
+        { id: 'birthday', name: 'Website Ulang Tahun', category: 'Birthday',
+          desc: 'Kejutan ulang tahun dengan kue interaktif, lilin yang bisa ditiup, confetti, dan pesan spesial.',
+          price: 'Rp20.000', paket: 'PREMIUM', emoji: '🎂', fitur: ['Kue Interaktif', '10 Foto', 'Musik Otomatis',
+            'Confetti Animation', 'PIN Rahasia', 'Balasan WhatsApp', 'Mobile Responsive'
+          ] },
+        { id: 'apology', name: 'Website Permintaan Maaf', category: 'Apology',
+          desc: 'Ungkapkan maaf dengan cara yang menyentuh melalui surat digital interaktif.', price: 'Rp15.000',
+          paket: 'BASIC', emoji: '🥺', fitur: ['Surat Interaktif', '5 Foto', '1 Lagu', 'Mobile Responsive'] },
+        { id: 'graduation', name: 'Website Wisuda Premium', category: 'Graduation',
+          desc: 'Rayakan kelulusan dengan website elegan, timeline perjuangan, dan galeri kenangan.',
+          price: 'Rp30.000', paket: 'VIP', emoji: '🎓', fitur: ['Unlimited Foto', 'Timeline Perjuangan',
+            'Custom Musik', 'Custom Warna', 'Prioritas Pengerjaan', 'PIN Rahasia', 'Mobile Responsive'
+          ] },
+        { id: 'confess', name: 'Website Confess / Ajakan Jadian', category: 'Confession',
+          desc: 'Nyatakan perasaan dengan website confess yang lucu dan romantis.', price: 'Rp15.000',
+          paket: 'BASIC', emoji: '💌', fitur: ['Surat Pengakuan', '5 Foto', '1 Lagu', 'Mobile Responsive'] },
+        { id: 'invitation', name: 'Undangan Digital Premium', category: 'Invitation',
+          desc: 'Undangan digital premium untuk acara spesial dengan desain eksklusif.', price: 'Rp10.000',
+          paket: 'BASIC', emoji: '💒', fitur: ['1 Halaman', '5 Foto', '1 Lagu', 'Mobile Responsive'] },
+        { id: 'memory', name: 'Website Kenangan Relationship', category: 'Memory',
+          desc: 'Kumpulkan kenangan indah dalam satu website, lengkap dengan timeline interaktif.',
+          price: 'Rp20.000', paket: 'PREMIUM', emoji: '📸', fitur: ['10 Foto', 'Timeline Interaktif',
+            'Musik Otomatis', 'PIN Rahasia', 'Animasi Premium', 'Mobile Responsive'
+          ] },
+        { id: 'surprise', name: 'Website Surprise Birthday', category: 'Birthday',
+          desc: 'Surprise ulang tahun yang tak terlupakan dengan efek kejutan dan hadiah virtual.',
+          price: 'Rp25.000', paket: 'VIP', emoji: '🎁', fitur: ['Unlimited Foto', 'Efek Kejutan', 'Custom Musik',
+            'Custom Warna', 'Prioritas Pengerjaan', 'Mobile Responsive'
+          ] },
+        { id: 'couple', name: 'Website Couple Gallery', category: 'Gallery',
+          desc: 'Galeri foto pasangan yang romantis dengan efek polaroid dan animasi premium.', price: 'Rp15.000',
+          paket: 'BASIC', emoji: '💕', fitur: ['Galeri Foto', '5 Foto', '1 Lagu', 'Mobile Responsive'] },
+      ];
+
+      // RENDER PORTFOLIO
+      const grid = document.getElementById('portfolioGrid');
+      grid.innerHTML = '';
+      portfolioData.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'glass p-6 cursor-pointer portfolio-card flex flex-col';
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.innerHTML = `
+            <div class="relative">
+              <span class="absolute top-2 right-2 z-10 text-xs font-bold px-3 py-1 rounded-full ${
+                item.paket === 'VIP' ? 'bg-accent text-white' : 
+                item.paket === 'PREMIUM' ? 'bg-primary text-white' : 
+                'bg-white/10 text-white'
+              }">${item.paket}</span>
+              <div class="h-44 rounded-xl flex items-center justify-center text-7xl mb-4" style="background:linear-gradient(135deg,#6C63FF30,#00D4FF20);">${item.emoji}</div>
+            </div>
+            <h3 class="font-bold font-display text-white text-lg leading-tight">${item.name}</h3>
+            <span class="text-xs text-secondary font-mono mt-1">${item.category}</span>
+            <p class="text-textsoft text-sm mt-2 line-clamp-2 flex-grow">${item.desc}</p>
+            <div class="flex items-center justify-between mt-4 pt-3 border-t border-white/5">
+              <span class="text-xl font-extrabold gradient-text">${item.price}</span>
+              <button class="btn-detail px-5 py-2.5 rounded-full text-sm font-semibold bg-white/5 border border-white/15 text-white hover:bg-white/10 transition" data-id="${item.id}">Detail ✨</button>
+            </div>
+          `;
+        grid.appendChild(card);
+        gsap.to(card, { opacity: 1, y: 0, duration: 0.5, delay: index * 0.08, ease: 'power2.out',
+          scrollTrigger: { trigger: card, start: 'top 85%', toggleActions: 'play none none none' } });
+      });
+
+      // MODAL
+      const modal = document.getElementById('detailModal');
+      const modalContent = document.getElementById('detailModalContent');
+
+      function openModal(html) { modalContent.innerHTML = html;
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden'; }
+
+      function closeModal() { modal.style.display = 'none';
+        document.body.style.overflow = ''; }
+
+      document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('btn-detail')) {
+          const id = e.target.dataset.id;
+          const item = portfolioData.find(p => p.id === id);
+          if (!item) return;
+          const html = `
+              <button id="closeDetailModal" class="absolute top-4 right-4 text-white/60 hover:text-white text-2xl z-10"><i class="fa-solid fa-xmark"></i></button>
+              <div class="text-center">
+                <div class="h-48 rounded-xl flex items-center justify-center text-8xl mb-4" style="background:linear-gradient(135deg,#6C63FF30,#00D4FF20);">${item.emoji}</div>
+                <span class="text-xs font-bold px-3 py-1 rounded-full ${item.paket === 'VIP' ? 'bg-accent text-white' : item.paket === 'PREMIUM' ? 'bg-primary text-white' : 'bg-white/10 text-white'}">${item.paket}</span>
+                <h3 class="text-2xl font-bold font-display gradient-text mt-3">${item.name}</h3>
+                <span class="text-xs text-secondary font-mono">${item.category}</span>
+                <p class="text-textsoft mt-3">${item.desc}</p>
+                <p class="text-3xl font-extrabold mt-4 gradient-text">${item.price}</p>
+              </div>
+              <div class="mt-6"><h4 class="font-semibold text-white mb-3">Fitur Paket:</h4><ul class="space-y-2">${item.fitur.map(f => `<li class="flex items-center gap-2 text-textsoft text-sm"><i class="fa-solid fa-check text-green-400"></i> ${f}</li>`).join('')}</ul></div>
+              <div class="flex gap-4 mt-8">
+                <button class="btn-demo-modal flex-1 px-6 py-3 rounded-full text-sm font-semibold border border-white/20 text-white hover:bg-white/5 transition text-center">🎥 Demo</button>
+                <a href="https://wa.me/6282181670112?text=Halo%20VLCrave,%20saya%20ingin%20pesan%20${encodeURIComponent(item.name)}%20(${item.paket})%20seharga%20${encodeURIComponent(item.price)}." target="_blank" class="flex-1 px-6 py-3 rounded-full text-sm font-semibold text-white text-center transition hover:scale-105" style="background:linear-gradient(135deg,#6C63FF,#00D4FF);">📱 Order via WhatsApp</a>
+              </div>
+            `;
+          openModal(html);
+        }
+      });
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal || e.target.id === 'closeDetailModal' || e.target.closest('#closeDetailModal'))
+          closeModal();
+      });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.style.display === 'flex')
+          closeModal(); });
+      document.addEventListener('click', (e) => { if (e.target.classList.contains('btn-demo-modal')) alert(
+          'Demo untuk website ini akan segera tersedia! 🎥'); });
+
+      // TESTIMONI
+      const testimoniData = [
+        { name: 'Ayu', comment: 'Website anniversary-nya bikin pasangan nangis haru!', rating: 5 },
+        { name: 'Bunga', comment: 'Keren banget, worth it banget deh!', rating: 5 },
+        { name: 'Cindy', comment: 'Pelayanan ramah dan cepat, hasilnya memuaskan.', rating: 5 },
+        { name: 'Dewi', comment: 'Hasilnya di luar ekspektasi, sangat profesional.', rating: 5 },
+        { name: 'Eka', comment: 'Pasti order lagi untuk event yang lain.', rating: 5 },
+        { name: 'Fira', comment: 'Teman-teman pada tanya bikin dimana, recommended!', rating: 5 },
+        { name: 'Gita', comment: 'Simple tapi elegant, suka banget!', rating: 5 },
+        { name: 'Hana', comment: 'Pengirimannya tepat waktu, ga ngecewain.', rating: 5 },
+        { name: 'Indah', comment: 'Desainnya sangat profesional dan premium.', rating: 5 },
+        { name: 'Jasmine', comment: 'Recommended banget buat yang mau website spesial.', rating: 5 },
+      ];
+      const track = document.getElementById('testimoniTrack');
+      const dots = document.getElementById('testimoniDots');
+      track.innerHTML = testimoniData.map(t => `
+          <div class="glass p-6 flex-shrink-0 w-64 md:w-72">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold flex-shrink-0" style="background:linear-gradient(135deg,#6C63FF,#00D4FF);">${t.name[0]}</div>
+              <div><p class="text-white font-semibold text-sm">${t.name}</p><div class="flex gap-0.5 text-yellow-400 text-xs">${'★'.repeat(t.rating)}</div></div>
+            </div>
+            <p class="text-textsoft text-sm mt-3">"${t.comment}"</p>
+          </div>
+        `).join('');
+      dots.innerHTML = testimoniData.map((_, i) =>
+        `<span class="w-2 h-2 rounded-full bg-white/20 cursor-pointer transition-all" data-index="${i}"></span>`
+        ).join('');
+      const firstDot = dots.querySelector('[data-index="0"]');
+      if (firstDot) { firstDot.style.background = '#6C63FF';
+        firstDot.style.width = '20px';
+        firstDot.style.borderRadius = '10px'; }
+      dots.querySelectorAll('span').forEach(dot => {
+        dot.addEventListener('click', () => {
+          const idx = parseInt(dot.dataset.index);
+          track.parentElement.scrollTo({ left: idx * 280, behavior: 'smooth' });
+        });
+      });
+      const scrollContainer = track.parentElement;
+      scrollContainer.addEventListener('scroll', () => {
+        const active = Math.round(scrollContainer.scrollLeft / 280);
+        dots.querySelectorAll('span').forEach((dot, i) => {
+          if (i === active) { dot.style.background = '#6C63FF';
+            dot.style.width = '20px';
+            dot.style.borderRadius = '10px'; } else { dot.style.background = 'rgba(255,255,255,0.2)';
+            dot.style.width = '8px';
+            dot.style.borderRadius = '50%'; }
+        });
+      });
+
+      // FAQ
+      const faqData = [
+        { q: 'Berapa lama pengerjaan?', a: '1-3 hari kerja tergantung paket dan antrian.' },
+        { q: 'Apakah bisa custom?', a: 'Tentu! Semua website bisa disesuaikan dengan keinginan Anda.' },
+        { q: 'Apakah website bisa dibuka selamanya?', a: 'Ya, website Anda akan tetap online selama hosting aktif.' },
+        { q: 'Bisa tambah foto?', a: 'Bisa, kami menyediakan upgrade foto kapan saja.' },
+        { q: 'Bisa ganti lagu?', a: 'Ya, Anda bisa memilih lagu favorit untuk website.' },
+        { q: 'Bisa tambah PIN?', a: 'Tersedia di paket Premium ke atas.' },
+        { q: 'Bisa edit setelah jadi?', a: 'Revisi minor gratis, revisi besar dikenakan biaya tambahan.' },
+        { q: 'Apakah mobile friendly?', a: 'Semua website kami mobile responsive.' },
+        { q: 'Bagaimana cara kirim data?', a: 'Cukup kirim via WhatsApp setelah order.' },
+        { q: 'Bisa request desain khusus?', a: 'Tentu, kami menerima custom request.' },
+        { q: 'Apakah ada garansi?', a: 'Garansi 7 hari untuk perbaikan bug.' },
+        { q: 'Bisa untuk lamaran?', a: 'Sangat cocok untuk momen lamaran spesial!' },
+        { q: 'Apakah website bisa dishare?', a: 'Ya, website dapat dibagikan melalui link.' },
+        { q: 'Ada diskon untuk order banyak?', a: 'Tentu, hubungi kami untuk penawaran khusus.' },
+        { q: 'Metode pembayaran apa saja?', a: 'Transfer bank, e-wallet, dan QRIS.' },
+      ];
+      const faqContainer = document.getElementById('faqContainer');
+      faqData.forEach((faq, i) => {
+        const div = document.createElement('div');
+        div.className = 'glass p-5 cursor-pointer';
+        div.innerHTML = `
+            <div class="flex justify-between items-center">
+              <span class="font-semibold text-white">${faq.q}</span>
+              <i class="fa-solid fa-chevron-down text-textsoft transition-transform duration-300" id="faqIcon${i}"></i>
+            </div>
+            <p class="text-textsoft text-sm mt-3" id="faqAnswer${i}" style="display:none;">${faq.a}</p>
+          `;
+        div.addEventListener('click', () => {
+          const ans = document.getElementById('faqAnswer' + i);
+          const icon = document.getElementById('faqIcon' + i);
+          const hidden = ans.style.display === 'none';
+          ans.style.display = hidden ? 'block' : 'none';
+          icon.style.transform = hidden ? 'rotate(180deg)' : 'rotate(0deg)';
+        });
+        faqContainer.appendChild(div);
+      });
+
+      // GSAP
+      gsap.registerPlugin(ScrollTrigger);
+    })();
+  </script>
+</body>
+</html>
