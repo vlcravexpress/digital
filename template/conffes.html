@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💌 Confess Spesial Untukmu</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pinkpastel: '#FFB5C2',
+                        rosegold: '#B76E79',
+                        cream: '#FFF8F0',
+                        softpink: '#FFD1DC',
+                        darkrose: '#9B4A54',
+                        romantic: '#E8879B',
+                    },
+                    fontFamily: {
+                        handwriting: ['"Dancing Script"', 'cursive'],
+                        elegant: ['"Playfair Display"', 'serif'],
+                        body: ['"Inter"', 'sans-serif'],
+                    },
+                    animation: {
+                        'heartbeat': 'heartbeat 0.9s ease-in-out infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        heartbeat: {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '14%': { transform: 'scale(1.3)' },
+                            '28%': { transform: 'scale(1)' },
+                            '42%': { transform: 'scale(1.3)' },
+                            '56%': { transform: 'scale(1)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        },
+                    },
+                },
+            },
+        };
+    </script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js">
+    </script>
+
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #1a1018;
+            margin: 0;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+        .glow-pink {
+            box-shadow: 0 0 35px rgba(255, 181, 194, 0.35), 0 0 70px rgba(255, 181, 194, 0.15);
+        }
+        .floating-heart {
+            position: fixed;
+            pointer-events: none;
+            z-index: 200;
+            animation: floatUpHeart 3.5s ease-out forwards;
+            opacity: 0;
+        }
+        @keyframes floatUpHeart {
+            0% { opacity:1; transform:translateY(0) scale(0.4) rotate(0deg); }
+            40% { opacity:1; transform:translateY(-180px) scale(1.1) rotate(15deg); }
+            100% { opacity:0; transform:translateY(-550px) scale(0.15) rotate(-25deg); }
+        }
+        .sparkle-dot {
+            position: fixed;
+            pointer-events: none;
+            z-index: 201;
+            width: 6px;
+            height: 6px;
+            background: #fff;
+            border-radius: 50%;
+            animation: sparkleAnim 1.6s ease-out forwards;
+            box-shadow: 0 0 10px #ffb5c2, 0 0 20px #ffb5c2;
+        }
+        @keyframes sparkleAnim {
+            0% { opacity:1; transform:scale(0) translate(0,0); }
+            50% { opacity:1; transform:scale(1.6) translate(var(--sx), var(--sy)); }
+            100% { opacity:0; transform:scale(0) translate(var(--ex), var(--ey)); }
+        }
+        .confetti-piece {
+            position: fixed;
+            pointer-events: none;
+            z-index: 202;
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            animation: confettiFall 3s ease-out forwards;
+        }
+        @keyframes confettiFall {
+            0% { opacity:1; transform:translateY(-100vh) rotate(0deg) scale(1); }
+            80% { opacity:1; }
+            100% { opacity:0; transform:translateY(110vh) rotate(720deg) scale(0.2); }
+        }
+        .page-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            background: linear-gradient(180deg, #1a1018 0%, #251820 40%, #1a1018 70%);
+            position: relative;
+            overflow: hidden;
+        }
+        .page-section.hidden {
+            display: none;
+        }
+        .runaway-btn {
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s step-end infinite;
+            color: #FFB5C2;
+        }
+        @keyframes blink {
+            0%,100% { opacity:1; }
+            50% { opacity:0; }
+        }
+        #loadingScreen {
+            position: fixed;
+            inset:0;
+            z-index:9999;
+            background:linear-gradient(180deg,#1a1018,#2d1a25,#1a1018);
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== LOADING SCREEN ========== -->
+    <div id="loadingScreen">
+        <i class="fa-solid fa-heart animate-heartbeat" style="font-size:4.5rem; color:#FFB5C2; filter:drop-shadow(0 0 35px rgba(255,181,194,0.6));"></i>
+        <p class="text-white/70 mt-4 text-lg" style="font-family:'Dancing Script',cursive;">Ada sesuatu yang ingin aku sampaikan...</p>
+        <div style="width:180px; height:3px; background:rgba(255,255,255,0.15); border-radius:10px; margin-top:18px; overflow:hidden;">
+            <div id="loadingBar" style="height:100%; background:linear-gradient(90deg,#FFB5C2,#E8879B,#B76E79); border-radius:10px; width:0%;"></div>
+        </div>
+    </div>
+
+    <!-- ========== HALAMAN 1: AMPLOP PEMBUKA ========== -->
+    <section id="pageEnvelope" class="page-section hidden">
+        <div class="glass max-w-md w-full p-8 md:p-10 text-center relative z-10">
+            <i class="fa-solid fa-envelope-open-heart text-6xl md:text-7xl mb-5 animate-float" style="color:#FFB5C2; filter:drop-shadow(0 0 30px rgba(255,181,194,0.6));"></i>
+            <h1 class="text-2xl md:text-3xl font-bold mb-4" style="font-family:'Dancing Script',cursive; color:#fff;">
+                💌 Untuk Seseorang yang Sangat Spesial
+            </h1>
+            <button id="btnOpenEnvelope" class="magnetic-btn px-10 py-4 rounded-full text-white font-bold text-lg glow-pink transition-all duration-300"
+            style="background:linear-gradient(135deg,#e8879b,#b76e79); border:none; cursor:pointer;">
+            ✨ Buka Surat ✨
+        </button>
+    </div>
+    <div id="particlesEnvelope" class="absolute inset-0 pointer-events-none z-0"></div>
+</section>
+
+<!-- ========== HALAMAN 2: CONFESS LETTER ========== -->
+<section id="pageConfess" class="page-section hidden">
+    <div class="glass max-w-lg w-full p-8 md:p-10 relative z-10 text-left" id="confessCard">
+        <div id="confessText" class="text-white/80 text-lg md:text-xl leading-relaxed space-y-3" style="font-family:'Dancing Script',cursive;"></div>
+        <button id="btnAfterConfess" class="magnetic-btn mt-6 px-8 py-3 rounded-full text-white font-semibold hidden"
+        style="background:linear-gradient(135deg,#d5c6e0,#b8a0c8); border:none; cursor:pointer;">
+        Lanjut 💖
+    </button>
+</div>
+<div id="particlesConfess" class="absolute inset-0 pointer-events-none z-0"></div>
+</section>
+
+<!-- ========== HALAMAN 3: AJAKAN JADIAN ========== -->
+<section id="pageProposal" class="page-section hidden">
+    <div class="glass max-w-lg w-full p-8 md:p-10 text-center relative z-10">
+        <i class="fa-solid fa-heart text-6xl md:text-7xl mb-5 animate-heartbeat" style="color:#FFB5C2; filter:drop-shadow(0 0 40px rgba(255,181,194,0.6));"></i>
+        <h1 class="text-2xl md:text-4xl font-bold mb-3 leading-snug" style="font-family:'Dancing Script',cursive; color:#fff;">
+            Maukah Kamu Menjadi Pacarku? ❤️
+        </h1>
+        <p class="text-white/70 text-sm md:text-base mb-8" style="font-family:'Dancing Script',cursive;">
+            "Aku ingin membuat lebih banyak kenangan indah bersamamu."
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center" id="buttonContainer">
+            <button id="btnIya" class="magnetic-btn px-10 py-4 rounded-full text-white font-bold text-lg glow-pink"
+            style="background:linear-gradient(135deg,#e8879b,#c96a7d); border:none; min-width:140px;">
+            ❤️ Iya, Mau
+        </button>
+        <button id="btnBelumYakin" class="magnetic-btn px-10 py-4 rounded-full text-white/80 font-semibold text-lg runaway-btn"
+        style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); min-width:140px;">
+        🥹 Belum Yakin
+    </button>
+</div>
+<div id="pesanLucu" class="mt-4 text-white/60 text-sm italic" style="font-family:'Dancing Script',cursive;"></div>
+</div>
+<div id="particlesProposal" class="absolute inset-0 pointer-events-none z-0"></div>
+</section>
+
+<!-- ========== HALAMAN 4: JAWABAN "IYA MAU" ========== -->
+<section id="pageIya" class="page-section hidden">
+    <div class="glass max-w-md w-full p-8 md:p-10 text-center relative z-10" id="iyaCard">
+        <div class="text-6xl md:text-7xl mb-4">🎉</div>
+        <h2 class="text-3xl md:text-4xl font-bold mb-3" style="font-family:'Dancing Script',cursive; color:#FFB5C2;">YEAYYY!</h2>
+        <p class="text-white/75 text-lg md:text-xl mb-6" style="font-family:'Dancing Script',cursive;">
+            "Aku janji akan berusaha menjadi seseorang yang membuatmu bahagia ❤️"
+        </p>
+        <div class="w-32 h-32 md:w-40 md:h-40 rounded-full mx-auto overflow-hidden border-4 border-pinkpastel glow-pink mb-6">
+            <img src="https://picsum.photos/seed/couplelove/300/300" alt="Kita" class="w-full h-full object-cover">
+        </div>
+        <button id="btnLanjutIya" class="magnetic-btn px-8 py-3 rounded-full text-white font-semibold"
+        style="background:linear-gradient(135deg,#d5c6e0,#b8a0c8); border:none; cursor:pointer;">
+        Lanjut 🌷
+    </button>
+</div>
+<div id="particlesIya" class="absolute inset-0 pointer-events-none z-0"></div>
+</section>
+
+<!-- ========== HALAMAN 5: JAWABAN "BELUM YAKIN" ========== -->
+<section id="pageBelum" class="page-section hidden">
+    <div class="glass max-w-md w-full p-8 md:p-10 text-center relative z-10" id="belumCard">
+        <div class="text-6xl md:text-7xl mb-4">🥹</div>
+        <p class="text-white/75 text-lg md:text-xl mb-3" style="font-family:'Dancing Script',cursive;">
+            "Terima kasih sudah jujur."
+        </p>
+        <p class="text-white/70 text-base md:text-lg mb-2" style="font-family:'Dancing Script',cursive;">
+            "Aku tetap menghargai keputusanmu."
+        </p>
+        <p class="text-white/65 text-sm md:text-base mb-6" style="font-family:'Dancing Script',cursive;">
+            "Yang penting, aku sudah menyampaikan apa yang selama ini aku rasakan ❤️"
+        </p>
+        <button id="btnLanjutBelum" class="magnetic-btn px-8 py-3 rounded-full text-white font-semibold"
+        style="background:linear-gradient(135deg,#d5c6e0,#b8a0c8); border:none; cursor:pointer;">
+        Lanjut 🦋
+    </button>
+</div>
+<div id="particlesBelum" class="absolute inset-0 pointer-events-none z-0"></div>
+</section>
+
+<!-- ========== HALAMAN 6: PENUTUP ========== -->
+<section id="pagePenutup" class="page-section hidden">
+    <div class="glass max-w-md w-full p-8 md:p-10 text-center relative z-10">
+        <i class="fa-solid fa-heart text-5xl mb-5" style="color:#FFB5C2;"></i>
+        <div class="text-2xl md:text-3xl font-bold mb-1" style="font-family:'Dancing Script',cursive; color:#FFB5C2;">
+            ❤️ Vicky Satria Lindy
+        </div>
+        <div class="text-lg text-white/50 mb-1">&</div>
+        <div class="text-2xl md:text-3xl font-bold mb-6" style="font-family:'Dancing Script',cursive; color:#FFB5C2;">
+            ❤️ Nadine Nurul
+        </div>
+        <p class="text-white/70 text-sm md:text-base" style="font-family:'Dancing Script',cursive;">
+            "Terima kasih sudah meluangkan waktu membaca sampai akhir."
+        </p>
+        <p class="text-white/60 text-sm mt-2" style="font-family:'Dancing Script',cursive;">
+            "Apapun jawabannya, aku senang pernah mengenalmu ❤️"
+        </p>
+        <button id="btnRestart" class="magnetic-btn mt-8 px-8 py-3 rounded-full text-white font-semibold"
+        style="background:linear-gradient(135deg,#d5c6e0,#b8a0c8); border:none; cursor:pointer;">
+        🔄 Ulangi Cerita
+    </button>
+</div>
+<div id="particlesPenutup" class="absolute inset-0 pointer-events-none z-0"></div>
+</section>
+
+<!-- ========== MUSIC CONTROL ========== -->
+<div id="musicBtn" class="fixed bottom-6 right-6 z-300 w-12 h-12 rounded-full bg-white/10 backdrop-blur-lg border border-white/20 flex items-center justify-center cursor-pointer shadow-lg transition-all duration-300 playing"
+style="box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+<i class="fa-solid fa-music text-white"></i>
+</div>
+<audio id="bgMusic" loop preload="auto" style="display:none;">
+    <source src="" type="audio/mpeg">
+</audio>
+
+<script>
+    (function() {
+        // ==================== GLOBAL STATE ====================
+        const loadingScreen = document.getElementById('loadingScreen');
+        const loadingBar = document.getElementById('loadingBar');
+        const bgMusic = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicBtn');
+        let musicPlaying = false;
+        let moveCount = 0; // untuk tombol Belum Yakin
+        let allowBelumClick = false; // setelah 3 perpindahan
+
+        // Sections
+        const pageEnvelope = document.getElementById('pageEnvelope');
+        const pageConfess = document.getElementById('pageConfess');
+        const pageProposal = document.getElementById('pageProposal');
+        const pageIya = document.getElementById('pageIya');
+        const pageBelum = document.getElementById('pageBelum');
+        const pagePenutup = document.getElementById('pagePenutup');
+        const allPages = [pageEnvelope, pageConfess, pageProposal, pageIya, pageBelum, pagePenutup];
+
+        function showPage(page) {
+            allPages.forEach(p => p.classList.add('hidden'));
+            page.classList.remove('hidden');
+            page.scrollIntoView({ behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ==================== UTILITY ====================
+        function spawnHearts(count = 5) {
+            const hearts = ['❤️','💕','💗','💖','💝','💘'];
+            for (let i=0; i<count; i++) {
+                const h = document.createElement('span');
+                h.className = 'floating-heart';
+                h.textContent = hearts[Math.floor(Math.random()*hearts.length)];
+                h.style.left = Math.random()*90+5+'%';
+                h.style.top = Math.random()*50+30+'%';
+                h.style.fontSize = (Math.random()*24+18)+'px';
+                document.body.appendChild(h);
+                setTimeout(() => h.remove(), 3500);
+            }
+        }
+
+        function spawnConfetti(count = 40) {
+            const colors = ['#FFB5C2','#E8879B','#B76E79','#D5C6E0','#FFE0C0','#fff','#FFD1DC'];
+            for (let i=0; i<count; i++) {
+                const c = document.createElement('span');
+                c.className = 'confetti-piece';
+                c.style.left = Math.random()*100+'%';
+                c.style.top = -(Math.random()*40+10)+'px';
+                c.style.backgroundColor = colors[Math.floor(Math.random()*colors.length)];
+                c.style.width = (Math.random()*10+6)+'px';
+                c.style.height = (Math.random()*12+6)+'px';
+                c.style.animationDuration = (Math.random()*2+2)+'s';
+                document.body.appendChild(c);
+                setTimeout(() => c.remove(), 3500);
+            }
+        }
+
+        function spawnSparkles(count = 10) {
+            for (let i=0; i<count; i++) {
+                const s = document.createElement('span');
+                s.className = 'sparkle-dot';
+                s.style.left = Math.random()*85+7+'%';
+                s.style.top = Math.random()*60+20+'%';
+                s.style.setProperty('--sx', (Math.random()*40-20)+'px');
+                s.style.setProperty('--sy', (Math.random()*-60-15)+'px');
+                s.style.setProperty('--ex', (Math.random()*70-35)+'px');
+                s.style.setProperty('--ey', (Math.random()*-100-30)+'px');
+                s.style.animationDuration = (Math.random()*1.2+1)+'s';
+                document.body.appendChild(s);
+                setTimeout(() => s.remove(), 2000);
+            }
+        }
+
+        // ==================== LOADING ====================
+        let progress = 0;
+        const loadInterval = setInterval(() => {
+            progress += Math.random()*10 + 5;
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(loadInterval);
+                loadingBar.style.width = '100%';
+                setTimeout(() => {
+                    gsap.to(loadingScreen, { opacity:0, duration:0.6, onComplete:() => {
+                        loadingScreen.style.display = 'none';
+                        showPage(pageEnvelope);
+                        gsap.fromTo('.glass', { scale:0.8, opacity:0, y:40 }, { scale:1, opacity:1, y:0, duration:0.8, ease:'back.out(1.7)' });
+                        spawnHearts(5);
+                    }});
+                }, 400);
+            }
+            loadingBar.style.width = progress + '%';
+        }, 150);
+
+        // ==================== MUSIC ====================
+        function toggleMusic() {
+            if (musicPlaying) {
+                bgMusic.pause();
+                musicBtn.classList.remove('playing');
+                musicBtn.querySelector('i').className = 'fa-solid fa-volume-xmark';
+            } else {
+                bgMusic.play().catch(() => {
+                    // fallback ambient jika file tidak ada
+                    if (!window.ambientStarted) startAmbient();
+                });
+                if (bgMusic.src) bgMusic.play();
+                musicBtn.classList.add('playing');
+                musicBtn.querySelector('i').className = 'fa-solid fa-music';
+            }
+            musicPlaying = !musicPlaying;
+        }
+
+        musicBtn.addEventListener('click', toggleMusic);
+
+        // Fallback ambient jika tidak ada file musik
+        let ambientOsc = null;
+        function startAmbient() {
+            try {
+                const ctx = new(window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = 261.63;
+                gain.gain.value = 0.03;
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                ambientOsc = { osc, gain, ctx };
+                window.ambientStarted = true;
+            } catch (e) {}
+        }
+
+        // ==================== ENVELOPE -> CONFESS ====================
+        document.getElementById('btnOpenEnvelope').addEventListener('click', () => {
+            const tl = gsap.timeline();
+            tl.to('#pageEnvelope .glass', { scale:1.5, opacity:0, duration:0.5, ease:'power2.in' })
+              .call(() => {
+                  showPage(pageConfess);
+                  gsap.fromTo('#confessCard', { scale:0.8, opacity:0, y:30 }, { scale:1, opacity:1, y:0, duration:0.7, ease:'back.out(1.5)' });
+                  startTypingConfess();
+                  spawnHearts(4);
+              });
+        });
+
+        // ==================== TYPING EFFECT ====================
+        const confessText = [
+            "Hai...",
+            "Mungkin selama ini aku belum pernah mengatakannya secara langsung.",
+            "Tapi ada satu hal yang selalu ingin aku sampaikan.",
+            "Aku nyaman saat berbicara denganmu.",
+            "Aku senang saat mendengar ceritamu.",
+            "Aku selalu menunggu pesan darimu.",
+            "Dan tanpa sadar...",
+            "Aku mulai menyukaimu ❤️"
+        ];
+
+        function startTypingConfess() {
+            const container = document.getElementById('confessText');
+            container.innerHTML = '';
+            let lineIndex = 0;
+            let charIndex = 0;
+            const typingSpeed = 40;
+            const linePause = 500;
+
+            function typeLine() {
+                if (lineIndex >= confessText.length) {
+                    document.getElementById('btnAfterConfess').classList.remove('hidden');
+                    gsap.fromTo('#btnAfterConfess', { opacity:0, y:15 }, { opacity:1, y:0, duration:0.4 });
+                    return;
+                }
+                const line = confessText[lineIndex];
+                if (charIndex < line.length) {
+                    container.innerHTML += line.charAt(charIndex);
+                    charIndex++;
+                    setTimeout(typeLine, typingSpeed);
+                } else {
+                    container.innerHTML += '<br>';
+                    charIndex = 0;
+                    lineIndex++;
+                    setTimeout(typeLine, linePause);
+                }
+            }
+            typeLine();
+        }
+
+        document.getElementById('btnAfterConfess').addEventListener('click', () => {
+            showPage(pageProposal);
+            gsap.fromTo('#pageProposal .glass', { scale:0.8, opacity:0 }, { scale:1, opacity:1, duration:0.7, ease:'back.out(1.5)' });
+            spawnHearts(4);
+            resetBelumYakin();
+        });
+
+        // ==================== BELUM YAKIN MOVEMENT ====================
+        const btnBelum = document.getElementById('btnBelumYakin');
+        const pesanLucu = document.getElementById('pesanLucu');
+        let moveMessages = [
+            "Yakin mau pilih itu? 🥺",
+            "Coba pikir lagi deh ❤️",
+            "Aku kasih kesempatan terakhir nih 😭"
+        ];
+
+        function moveButtonRandom() {
+            if (moveCount >= 3) return;
+            const btn = btnBelum;
+            const maxX = window.innerWidth - btn.offsetWidth - 20;
+            const maxY = window.innerHeight - btn.offsetHeight - 20;
+            btn.style.position = 'fixed';
+            btn.style.left = Math.max(10, Math.random() * maxX) + 'px';
+            btn.style.top = Math.max(10, Math.random() * maxY) + 'px';
+            btn.style.zIndex = '250';
+        }
+
+        function handleBelumMove(e) {
+            e.preventDefault();
+            if (moveCount >= 3) {
+                // setelah 3 kali, tombol bisa diklik normal
+                handleBelumClick();
+                return;
+            }
+            moveButtonRandom();
+            pesanLucu.textContent = moveMessages[moveCount] || '';
+            gsap.fromTo(pesanLucu, { opacity:0, y:10 }, { opacity:1, y:0, duration:0.3 });
+            moveCount++;
+            if (moveCount >= 3) {
+                // setelah 3 perpindahan, ubah teks tombol dan izinkan klik
+                btnBelum.textContent = '🥹 Belum Yakin';
+                allowBelumClick = true;
+                // hapus event listener untuk move
+                btnBelum.removeEventListener('mouseenter', handleBelumMove);
+                btnBelum.removeEventListener('touchstart', handleBelumMove);
+                // tambahkan event click langsung untuk jalur belum
+                btnBelum.addEventListener('click', handleBelumClick);
+            }
+        }
+
+        function handleBelumClick() {
+            // Pindah ke halaman jawaban "Belum Yakin"
+            showPage(pageBelum);
+            gsap.fromTo('#belumCard', { scale:0.7, opacity:0 }, { scale:1, opacity:1, duration:0.7, ease:'back.out(1.5)' });
+            spawnHearts(6);
+            spawnSparkles(8);
+        }
+
+        function resetBelumYakin() {
+            moveCount = 0;
+            allowBelumClick = false;
+            btnBelum.textContent = '🥹 Belum Yakin';
+            btnBelum.style.position = 'relative';
+            btnBelum.style.left = '';
+            btnBelum.style.top = '';
+            btnBelum.style.zIndex = '';
+            pesanLucu.textContent = '';
+            // Hapus semua event listener lama
+            btnBelum.removeEventListener('mouseenter', handleBelumMove);
+            btnBelum.removeEventListener('touchstart', handleBelumMove);
+            btnBelum.removeEventListener('click', handleBelumClick);
+            // Tambah event listener untuk move
+            btnBelum.addEventListener('mouseenter', handleBelumMove);
+            btnBelum.addEventListener('touchstart', handleBelumMove, { passive: false });
+        }
+
+        // Inisialisasi awal
+        resetBelumYakin();
+
+        // ==================== TOMBOL IYA ====================
+        document.getElementById('btnIya').addEventListener('click', () => {
+            showPage(pageIya);
+            gsap.fromTo('#iyaCard', { scale:0.5, opacity:0 }, { scale:1, opacity:1, duration:0.8, ease:'back.out(1.7)' });
+            spawnConfetti(80);
+            spawnHearts(20);
+            spawnSparkles(15);
+        });
+
+        // ==================== NAVIGASI AKHIR ====================
+        document.getElementById('btnLanjutIya').addEventListener('click', () => {
+            showPage(pagePenutup);
+            gsap.fromTo('#pagePenutup .glass', { scale:0.8, opacity:0 }, { scale:1, opacity:1, duration:0.7, ease:'back.out(1.5)' });
+            spawnHearts(6);
+        });
+
+        document.getElementById('btnLanjutBelum').addEventListener('click', () => {
+            showPage(pagePenutup);
+            gsap.fromTo('#pagePenutup .glass', { scale:0.8, opacity:0 }, { scale:1, opacity:1, duration:0.7, ease:'back.out(1.5)' });
+            spawnHearts(6);
+        });
+
+        document.getElementById('btnRestart').addEventListener('click', () => {
+            showPage(pageEnvelope);
+            gsap.fromTo('.glass', { scale:0.8, opacity:0, y:40 }, { scale:1, opacity:1, y:0, duration:0.8, ease:'back.out(1.7)' });
+            spawnHearts(5);
+            resetBelumYakin();
+        });
+
+        // ==================== GLOBAL EFFECTS ====================
+        setInterval(() => {
+            if (!document.hidden) spawnHearts(1);
+        }, 4000);
+    })();
+</script>
+</body>
+</html>
